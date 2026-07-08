@@ -3,18 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh Sách Ghi Danh Cầu Siêu - Phiên Bản Nâng Cao</title>
+    <title>Danh Sách Ghi Danh Cầu Siêu</title>
     <style>
         /* === GIAO DIỆN MÀN HÌNH === */
         body { font-family: Arial, sans-serif; padding: 20px; background-color: #f0f2f5; margin: 0; }
-        
-        /* Đã thêm position: relative; vào container */
         .app-container { max-width: 1200px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; }
-        
-        /* CSS cho nút Home */
         .btn-home { position: absolute; top: 20px; left: 20px; text-decoration: none; background: #6c757d; color: white; padding: 8px 15px; border-radius: 4px; font-size: 14px; font-weight: bold; }
         .btn-home:hover { background: #5a6268; }
-
         h1, h2 { color: #2c3e50; text-align: center; }
         
         .form-section { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; background: #fafafa; padding: 15px; border: 1px solid #ddd; border-radius: 6px; margin-top: 40px; }
@@ -28,12 +23,18 @@
         button { padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; color: white; transition: 0.2s; }
         .btn-save { background-color: #28a745; }
         .btn-save:hover { background-color: #218838; }
+        .btn-cancel { background-color: #6c757d; display: none; } /* Ẩn mặc định */
+        .btn-cancel:hover { background-color: #5a6268; }
+        
         .btn-add-queue { background-color: #17a2b8; }
         .btn-add-queue:hover { background-color: #138496; }
         .btn-remove-queue { background-color: #ff9800; }
         .btn-remove-queue:hover { background-color: #e68a00; }
-        .btn-delete { background: #dc3545; }
+        .btn-edit { background-color: #ffc107; color: #333; padding: 6px 10px; }
+        .btn-edit:hover { background-color: #e0a800; }
+        .btn-delete { background: #dc3545; padding: 6px 10px; }
         .btn-delete:hover { background: #c82333; }
+        
         .btn-print-final { background-color: #007bff; font-size: 18px; padding: 15px 30px; width: 100%; margin-top: 10px; }
         .btn-print-final:hover { background-color: #0069d9; }
 
@@ -47,24 +48,21 @@
         .list-item { border: 1px solid #e0e0e0; padding: 12px; margin-bottom: 10px; border-radius: 4px; background: #f9f9f9; display: flex; justify-content: space-between; align-items: center; }
         .list-item-info strong { color: #b71c1c; font-size: 16px; }
         .list-item-info p { margin: 5px 0 0 0; font-size: 13px; color: #555; }
-        .list-item-actions { display: flex; gap: 5px; flex-direction: column; }
+        .list-item-actions { display: flex; gap: 5px; flex-direction: column; width: 140px;}
+        .action-row { display: flex; gap: 5px; }
+        .action-row button { flex: 1; }
 
-        /* === BỐ CỤC IN (ĐÃ TINH CHỈNH LẠI KHOẢNG CÁCH) === */
+        /* === BỐ CỤC IN === */
         #printArea { display: none; }
         .ticket { font-family: "Times New Roman", Times, serif; background: white; color: #000; box-sizing: border-box; }
         .ticket-inner { padding: 10px 15px; } 
-        
         .chua-header { text-align: center; font-size: 13pt; line-height: 1.2; margin-bottom: 10px; } 
         .chua-header .ten-chua { font-size: 16pt; font-weight: bold; text-transform: uppercase; }
-        
         .form-title { text-align: center; font-size: 17pt; font-weight: bold; line-height: 1.3; margin-bottom: 12px; }
-        
         .info-row { display: flex; margin-bottom: 8px; align-items: flex-end; font-size: 13pt; font-weight: bold; }
         .info-row span { margin-right: 5px; }
         .info-row .dotted { flex-grow: 1; border-bottom: 2px dotted #000; min-height: 16px; font-weight: normal; font-style: italic; padding-left: 5px; }
-        
         .cau-sieu-title { text-align: center; font-weight: bold; text-decoration: underline; font-size: 14pt; margin: 10px 0; }
-        
         .list-row { display: flex; margin-bottom: 7px; align-items: flex-end; font-size: 13pt; }
         .list-row .num { width: 25px; }
         .list-row .dotted-line { flex-grow: 1; border-bottom: 2px dotted #000; min-height: 18px; padding-left: 5px; }
@@ -100,7 +98,8 @@
             <textarea id="danhSachMoi" placeholder="1. Nguyễn Văn A - Pháp danh: Thiện Tâm..."></textarea>
         </div>
         <div class="action-buttons">
-            <button class="btn-save" onclick="themGiaDinh()">💾 Lưu Vào Hệ Thống</button>
+            <button class="btn-save" id="btnSave" onclick="luuDanhSach()">💾 Lưu Vào Hệ Thống</button>
+            <button class="btn-cancel" id="btnCancel" onclick="huySua()">❌ Hủy Chỉnh Sửa</button>
         </div>
     </div>
 
@@ -126,6 +125,9 @@
 <script>
     let duLieuCauSieu = JSON.parse(localStorage.getItem('cauSieuDataV4')) || [];
     let danhSachChoIn = [];
+    
+    // Biến lưu trữ ID của gia đình đang được chỉnh sửa
+    let idDangSua = null; 
 
     function chunkArray(array, size) {
         if (array.length === 0) return [[]];
@@ -154,10 +156,13 @@
                     </div>
                     <div class="list-item-actions">
                         ${daThemVaoIn 
-                            ? `<button class="btn-remove-queue" onclick="xoaKhoiChoIn('${gd.id}')">Đã thêm (Bỏ chọn)</button>`
-                            : `<button class="btn-add-queue" onclick="themVaoChoIn('${gd.id}')">➕ Thêm vào chờ In</button>`
+                            ? `<button class="btn-remove-queue" onclick="xoaKhoiChoIn('${gd.id}')">Bỏ chọn In</button>`
+                            : `<button class="btn-add-queue" onclick="themVaoChoIn('${gd.id}')">➕ Thêm vào In</button>`
                         }
-                        <button class="btn-delete" onclick="xoaGiaDinh('${gd.id}')">Xóa</button>
+                        <div class="action-row">
+                            <button class="btn-edit" onclick="suaGiaDinh('${gd.id}')">✏️ Sửa</button>
+                            <button class="btn-delete" onclick="xoaGiaDinh('${gd.id}')">🗑️ Xóa</button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -201,30 +206,79 @@
         renderDanhSachChoIn();
     }
 
-    function themGiaDinh() {
+    // --- CÁC HÀM XỬ LÝ CHỈNH SỬA ---
+
+    function suaGiaDinh(id) {
+        const gd = duLieuCauSieu.find(item => item.id === id);
+        if (gd) {
+            // Đưa dữ liệu lên form
+            document.getElementById('giaChu').value = gd.giaChu;
+            document.getElementById('diaChi').value = gd.diaChi;
+            document.getElementById('danhSachMoi').value = gd.danhSach;
+            
+            // Chuyển trạng thái sang "Đang sửa"
+            idDangSua = id;
+            document.getElementById('btnSave').innerHTML = '🔄 Cập Nhật Dữ Liệu';
+            document.getElementById('btnSave').style.backgroundColor = '#ff9800'; // Đổi màu cam
+            document.getElementById('btnCancel').style.display = 'inline-block'; // Hiện nút Hủy
+            
+            // Tự động cuộn trang lên trên cùng để người dùng thấy form
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    function huySua() {
+        // Xóa sạch dữ liệu trên form và đưa về trạng thái Thêm mới
+        idDangSua = null;
+        document.getElementById('giaChu').value = '';
+        document.getElementById('diaChi').value = '';
+        document.getElementById('danhSachMoi').value = '';
+        
+        document.getElementById('btnSave').innerHTML = '💾 Lưu Vào Hệ Thống';
+        document.getElementById('btnSave').style.backgroundColor = '#28a745'; // Trả về màu xanh
+        document.getElementById('btnCancel').style.display = 'none'; // Ẩn nút hủy
+    }
+
+    function luuDanhSach() {
         const giaChu = document.getElementById('giaChu').value.trim();
         const diaChi = document.getElementById('diaChi').value.trim();
         const danhSach = document.getElementById('danhSachMoi').value.trim();
 
         if (giaChu === '') { alert('Vui lòng nhập Tên gia chủ!'); return; }
 
-        const newId = 'id_' + new Date().getTime();
-        duLieuCauSieu.unshift({ id: newId, giaChu: giaChu, diaChi: diaChi, danhSach: danhSach });
+        if (idDangSua) {
+            // NẾU ĐANG SỬA: Tìm và cập nhật dữ liệu cũ
+            const index = duLieuCauSieu.findIndex(item => item.id === idDangSua);
+            if (index !== -1) {
+                duLieuCauSieu[index].giaChu = giaChu;
+                duLieuCauSieu[index].diaChi = diaChi;
+                duLieuCauSieu[index].danhSach = danhSach;
+            }
+        } else {
+            // NẾU THÊM MỚI: Tạo id mới và chèn vào mảng
+            const newId = 'id_' + new Date().getTime();
+            duLieuCauSieu.unshift({ id: newId, giaChu: giaChu, diaChi: diaChi, danhSach: danhSach });
+        }
+        
+        // Lưu vào bộ nhớ trình duyệt
         localStorage.setItem('cauSieuDataV4', JSON.stringify(duLieuCauSieu));
         
-        document.getElementById('giaChu').value = '';
-        document.getElementById('diaChi').value = '';
-        document.getElementById('danhSachMoi').value = '';
-        
-        document.getElementById('searchKey').value = '';
+        huySua(); // Dọn dẹp form
+        document.getElementById('searchKey').value = ''; // Xóa ô tìm kiếm
         capNhatGiaoDien();
     }
+
+    // --- KẾT THÚC CÁC HÀM XỬ LÝ CHỈNH SỬA ---
 
     function xoaGiaDinh(id) {
         if(confirm('Xóa vĩnh viễn gia đình này khỏi cơ sở dữ liệu?')) {
             duLieuCauSieu = duLieuCauSieu.filter(gd => gd.id !== id);
             danhSachChoIn = danhSachChoIn.filter(item => item !== id); 
             localStorage.setItem('cauSieuDataV4', JSON.stringify(duLieuCauSieu));
+            
+            // Nếu đang sửa mà lỡ tay xóa luôn gia đình đó thì reset form
+            if (idDangSua === id) huySua(); 
+            
             capNhatGiaoDien();
         }
     }
