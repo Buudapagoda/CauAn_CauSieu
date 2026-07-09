@@ -23,7 +23,7 @@
         button { padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; color: white; transition: 0.2s; }
         .btn-save { background-color: #28a745; }
         .btn-save:hover { background-color: #218838; }
-        .btn-cancel { background-color: #6c757d; display: none; } /* Ẩn mặc định */
+        .btn-cancel { background-color: #6c757d; display: none; }
         .btn-cancel:hover { background-color: #5a6268; }
         
         .btn-add-queue { background-color: #17a2b8; }
@@ -48,6 +48,9 @@
         .list-item { border: 1px solid #e0e0e0; padding: 12px; margin-bottom: 10px; border-radius: 4px; background: #f9f9f9; display: flex; justify-content: space-between; align-items: center; }
         .list-item-info strong { color: #b71c1c; font-size: 16px; }
         .list-item-info p { margin: 5px 0 0 0; font-size: 13px; color: #555; }
+        .print-badge { background-color: #6c757d; color: white; padding: 2px 6px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 5px; }
+        .print-badge.printed { background-color: #28a745; } /* Đổi màu xanh nếu đã in */
+
         .list-item-actions { display: flex; gap: 5px; flex-direction: column; width: 140px;}
         .action-row { display: flex; gap: 5px; }
         .action-row button { flex: 1; }
@@ -125,8 +128,6 @@
 <script>
     let duLieuCauSieu = JSON.parse(localStorage.getItem('cauSieuDataV4')) || [];
     let danhSachChoIn = [];
-    
-    // Biến lưu trữ ID của gia đình đang được chỉnh sửa
     let idDangSua = null; 
 
     function chunkArray(array, size) {
@@ -146,13 +147,20 @@
             const daThemVaoIn = danhSachChoIn.includes(gd.id);
             const soNguoiMat = gd.danhSach.split('\n').filter(item => item.trim() !== '').length;
             const soCot = Math.ceil(soNguoiMat / 12) || 1;
+            
+            // Xử lý hiển thị số lần in
+            const soLanIn = gd.soLanIn || 0;
+            const badgeClass = soLanIn > 0 ? 'print-badge printed' : 'print-badge';
 
             area.innerHTML += `
                 <div class="list-item" style="${daThemVaoIn ? 'opacity: 0.5;' : ''}">
                     <div class="list-item-info">
                         <strong>Gia chủ: ${gd.giaChu}</strong>
                         <p>Địa chỉ: ${gd.diaChi}</p>
-                        <p><i>Gồm ${soNguoiMat} tên (Cần ${soCot} cột giấy)</i></p>
+                        <p>
+                            <i>Gồm ${soNguoiMat} tên (Cần ${soCot} cột)</i> 
+                            <span class="${badgeClass}">Đã in: ${soLanIn} lần</span>
+                        </p>
                     </div>
                     <div class="list-item-actions">
                         ${daThemVaoIn 
@@ -206,37 +214,31 @@
         renderDanhSachChoIn();
     }
 
-    // --- CÁC HÀM XỬ LÝ CHỈNH SỬA ---
-
     function suaGiaDinh(id) {
         const gd = duLieuCauSieu.find(item => item.id === id);
         if (gd) {
-            // Đưa dữ liệu lên form
             document.getElementById('giaChu').value = gd.giaChu;
             document.getElementById('diaChi').value = gd.diaChi;
             document.getElementById('danhSachMoi').value = gd.danhSach;
             
-            // Chuyển trạng thái sang "Đang sửa"
             idDangSua = id;
             document.getElementById('btnSave').innerHTML = '🔄 Cập Nhật Dữ Liệu';
-            document.getElementById('btnSave').style.backgroundColor = '#ff9800'; // Đổi màu cam
-            document.getElementById('btnCancel').style.display = 'inline-block'; // Hiện nút Hủy
+            document.getElementById('btnSave').style.backgroundColor = '#ff9800'; 
+            document.getElementById('btnCancel').style.display = 'inline-block'; 
             
-            // Tự động cuộn trang lên trên cùng để người dùng thấy form
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
 
     function huySua() {
-        // Xóa sạch dữ liệu trên form và đưa về trạng thái Thêm mới
         idDangSua = null;
         document.getElementById('giaChu').value = '';
         document.getElementById('diaChi').value = '';
         document.getElementById('danhSachMoi').value = '';
         
         document.getElementById('btnSave').innerHTML = '💾 Lưu Vào Hệ Thống';
-        document.getElementById('btnSave').style.backgroundColor = '#28a745'; // Trả về màu xanh
-        document.getElementById('btnCancel').style.display = 'none'; // Ẩn nút hủy
+        document.getElementById('btnSave').style.backgroundColor = '#28a745'; 
+        document.getElementById('btnCancel').style.display = 'none'; 
     }
 
     function luuDanhSach() {
@@ -247,38 +249,32 @@
         if (giaChu === '') { alert('Vui lòng nhập Tên gia chủ!'); return; }
 
         if (idDangSua) {
-            // NẾU ĐANG SỬA: Tìm và cập nhật dữ liệu cũ
             const index = duLieuCauSieu.findIndex(item => item.id === idDangSua);
             if (index !== -1) {
                 duLieuCauSieu[index].giaChu = giaChu;
                 duLieuCauSieu[index].diaChi = diaChi;
                 duLieuCauSieu[index].danhSach = danhSach;
+                // Khi sửa, KHÔNG reset số lần in (vẫn giữ nguyên lịch sử in)
             }
         } else {
-            // NẾU THÊM MỚI: Tạo id mới và chèn vào mảng
             const newId = 'id_' + new Date().getTime();
-            duLieuCauSieu.unshift({ id: newId, giaChu: giaChu, diaChi: diaChi, danhSach: danhSach });
+            // THÊM MỚI: Khởi tạo biến soLanIn = 0
+            duLieuCauSieu.unshift({ id: newId, giaChu: giaChu, diaChi: diaChi, danhSach: danhSach, soLanIn: 0 });
         }
         
-        // Lưu vào bộ nhớ trình duyệt
         localStorage.setItem('cauSieuDataV4', JSON.stringify(duLieuCauSieu));
         
-        huySua(); // Dọn dẹp form
-        document.getElementById('searchKey').value = ''; // Xóa ô tìm kiếm
+        huySua(); 
+        document.getElementById('searchKey').value = ''; 
         capNhatGiaoDien();
     }
-
-    // --- KẾT THÚC CÁC HÀM XỬ LÝ CHỈNH SỬA ---
 
     function xoaGiaDinh(id) {
         if(confirm('Xóa vĩnh viễn gia đình này khỏi cơ sở dữ liệu?')) {
             duLieuCauSieu = duLieuCauSieu.filter(gd => gd.id !== id);
             danhSachChoIn = danhSachChoIn.filter(item => item !== id); 
             localStorage.setItem('cauSieuDataV4', JSON.stringify(duLieuCauSieu));
-            
-            // Nếu đang sửa mà lỡ tay xóa luôn gia đình đó thì reset form
             if (idDangSua === id) huySua(); 
-            
             capNhatGiaoDien();
         }
     }
@@ -334,9 +330,19 @@
             cacKhoi12.forEach(khoi => {
                 printArea.innerHTML += `<div class="ticket">${taoHTMLPhieuIn(gd.giaChu, gd.diaChi, khoi)}</div>`;
             });
+
+            // Tăng số lần in lên 1 cho gia đình này
+            gd.soLanIn = (gd.soLanIn || 0) + 1;
         });
 
+        // Lưu bản ghi lịch sử in vào máy
+        localStorage.setItem('cauSieuDataV4', JSON.stringify(duLieuCauSieu));
+        
+        // Gọi lệnh In của trình duyệt
         window.print();
+        
+        // Cập nhật lại giao diện để hiển thị số lần in mới
+        capNhatGiaoDien();
     }
 
     window.onload = () => capNhatGiaoDien();
