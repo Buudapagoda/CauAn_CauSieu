@@ -378,9 +378,7 @@
     }
 
     // Khi vừa mở trang web, hệ thống sẽ tự động tải dữ liệu từ Google Sheets về
-   window.onload = () => {
-        capNhatGiaoDien(); 
-        syncDataToSheet(); // Lệnh này ép đẩy dữ liệu từ máy tính lên Mây
+   window.onload = () => loadDataFromSheet();
     };
 </script>
 </body>
