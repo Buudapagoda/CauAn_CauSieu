@@ -17,23 +17,22 @@
         textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
         .flex-row { display: flex; gap: 10px; margin-bottom: 15px; }
         .flex-row > div { flex: 1; }
-        .btn-action { width: 100%; padding: 12px; border: none; border-radius: 4px; font-weight: bold; font-size: 16px; cursor: pointer; color: white; background: #2e7d32; margin-top: 10px;}
+        .btn-action { width: 100%; padding: 12px; border: none; border-radius: 4px; font-weight: bold; font-size: 16px; cursor: pointer; color: white; margin-top: 10px;}
         .hidden { display: none !important; }
         .search-box { display: flex; gap: 10px; margin-bottom: 15px; }
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: #f5f5f5; }
-        .btn-in-nhanh { background: #d32f2f; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;}
+        .btn-in-nhanh { color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; margin-right: 5px; margin-bottom: 5px; }
 
         /* --- CSS IN ẤN --- */
         #printArea { display: none; }
         @media print {
             @page { size: A4 portrait; margin: 0; }
             body { padding: 0; background: white; }
-            .container { display: none; } /* Lệnh giấu giao diện web khi in */
+            .container { display: none; }
             #printArea { display: block; }
             
-            /* Cấu trúc khổ giấy */
             .page-kieu-ngan { width: 210mm; height: 297mm; padding: 10mm; box-sizing: border-box; page-break-after: always; display: flex; flex-direction: row; gap: 10mm; font-family: 'Times New Roman', serif; }
             .half-page { width: 50%; height: 100%; border: 4px double #333; padding: 15px; box-sizing: border-box; display: flex; flex-direction: column; position: relative; }
             .cs-container-flex { margin-top: auto; padding-top: 20px; border-top: 2px dotted #000; }
@@ -44,7 +43,7 @@
             .content-flow { position: absolute; top: 15mm; bottom: 15mm; left: 15mm; right: 15mm; column-count: 2; column-gap: 20mm; column-fill: auto; z-index: 1; }
             .cs-block-flow { margin-top: 60px; border-top: 2px dotted #000; padding-top: 20px; break-inside: avoid; }
 
-         /* Định dạng chữ */
+           /* Định dạng chữ */
             .ma-bv { position: absolute; top: 10px; left: 15px; font-size: 18px; font-weight: bold;} /* Mã Bài Vị */
             .title-red { color: red !important; font-size: 28px; font-weight: bold; text-align: center; margin-bottom: 15px; text-transform: uppercase;} /* Tiêu đề Đỏ: TRAI CHỦ, CẦU SIÊU */
             .tc-content { white-space: pre-line; line-height: 1.8; font-size: 24px; text-align: center; } /* Danh sách người cúng (Gia chủ) */
@@ -53,7 +52,7 @@
             .hl-name { font-size: 40px; font-weight: bold; margin: 15px 0; text-align: center;} /* Tên Hương Linh (Cá nhân) */
             .pd-name { font-size: 26px; font-weight: bold; margin-bottom: 15px; text-align: center;} /* Pháp Danh (Cá nhân) */
             .details { font-size: 22px; line-height: 1.8; margin-bottom: 5px; text-align: center; } /* Thông tin Sanh, Mất, Tuổi */
-            .phoi-tien { padding-top: 10px; margin-top: 15px; font-size: 20px; white-space: pre-line; text-align: left; line-height: 1.8; } /* Cầu siêu thêm (Phối tiến) */
+            .phoi-tien { padding-top: 10px; margin-top: 15px; font-size: 22px; white-space: pre-line; text-align: left; line-height: 1.8; } /* Cầu siêu thêm (Phối tiến) */
             
             /* Dành cho Danh sách Cúng Chung */
             .cc-list-name { font-size: 32px; font-weight: bold; text-align: center; margin-top: 10px; } /* Tên Hương Linh (Cúng chung) */
@@ -66,11 +65,11 @@
     <div class="container">
         <div class="tabs">
             <a href="index.html" style="background-color: #34495e; color: white; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; display: flex; align-items: center; justify-content: center;">🏠 Menu Chính</a>
-            
             <button class="tab-btn active" id="btnTabNhap" onclick="chuyenTab('nhapLieu')">📝 Nhập Liệu</button>
             <button class="tab-btn" id="btnTabTim" onclick="chuyenTab('timKiem')">🔍 Tìm Kiếm & In</button>
         </div>
 
+        <!-- TAB 1: NHẬP LIỆU -->
         <div id="tabNhapLieu">
             <div class="flex-row">
                 <div class="form-group">
@@ -91,7 +90,7 @@
             
             <div class="form-group hidden" id="khuVucMaBV">
                 <label>Mã Bài Vị Cúng Chung</label>
-                <input type="number" id="inMaBV" style="background: #e3f2fd; font-weight: bold;">
+                <input type="text" id="inMaBV" style="background: #e3f2fd; font-weight: bold;" readonly>
             </div>
 
             <div class="form-group">
@@ -99,6 +98,7 @@
                 <textarea id="inTraiChu" placeholder="VD: Lâm Minh Hà" style="height: 100px; text-align: center;"></textarea>
             </div>
 
+            <!-- Khung Cá Nhân -->
             <div id="formCaNhan">
                 <div class="flex-row">
                     <div><label>Tên Hương Linh</label><input type="text" id="inTen"></div>
@@ -118,18 +118,23 @@
                 </div>
             </div>
 
+            <!-- Khung Cúng Chung -->
             <div id="formCungChung" class="hidden">
                 <div class="form-group" style="margin-top: 15px;">
                     <label style="color: #b71c1c; border-bottom: 1px solid #ccc; padding-bottom: 5px;">Danh Sách Cầu Siêu (Mỗi người 1 dòng)</label>
-                    <textarea id="inDanhSachCC" style="height: 250px; text-align: center;" placeholder="Gõ danh sách vào đây...&#10;Nếu là Pháp danh hoặc Tức là, hãy ghi chữ Pd: hoặc Tức: ở đầu dòng đó.&#10;&#10;VD:&#10;Lâm Văn Long&#10;Tức: Trương Trọng Huấn&#10;Phạm Thị Nhàn&#10;Pd: Diệu Tĩnh"></textarea>
+                    <textarea id="inDanhSachCC" style="height: 250px; text-align: center;" placeholder="Gõ danh sách vào đây..."></textarea>
                 </div>
             </div>
 
-            <button class="btn-action" onclick="luuDuLieu()">💾 Lưu Lên Trang Tính</button>
+            <!-- NÚT LƯU ĐÃ ĐƯỢC CHỈNH SỬA ĐỂ CÓ THỂ ĐỔI TÊN THÀNH "CẬP NHẬT" -->
+            <button class="btn-action" id="btnLuu" style="background: #2e7d32;" onclick="luuDuLieu()">💾 Lưu Mới Lên Trang Tính</button>
+            <button class="btn-action hidden" id="btnHuySua" style="background: #7f8c8d; margin-top: 5px;" onclick="huyCheDoSua()">❌ Hủy Chỉnh Sửa (Thêm Mới)</button>
+            
             <button class="btn-action" style="background: #d32f2f;" onclick="inTrucTiep()">🖨️ Thực Hiện In</button>
             <p id="trangThai" style="text-align: center; margin-top: 10px; font-weight: bold;"></p>
         </div>
 
+        <!-- TAB 2: TÌM KIẾM -->
         <div id="tabTimKiem" class="hidden">
             <div class="search-box">
                 <select id="loaiTimKiem" style="width: 180px; font-weight: bold; color: #1976d2;">
@@ -137,9 +142,8 @@
                     <option value="CaNhan">Chỉ Cá Nhân</option>
                     <option value="CungChung">Chỉ Cúng Chung</option>
                 </select>
-                
                 <input type="text" id="txtTimKiem" placeholder="Nhập tên Hương Linh hoặc Mã BV để tìm...">
-                <button class="btn-action" style="width: auto; margin-top: 0;" onclick="taiDuLieuTuSheets()">🔄 Tải Dữ Liệu</button>
+                <button class="btn-action" style="width: auto; margin-top: 0; background: #2e7d32;" onclick="taiDuLieuTuSheets()">🔄 Tải Dữ Liệu</button>
             </div>
             <table>
                 <thead>
@@ -147,7 +151,7 @@
                         <th>Loại</th>
                         <th>Hương Linh / Mã BV</th>
                         <th>Pháp Danh</th>
-                        <th>Thao Tác</th>
+                        <th style="width: 160px;">Thao Tác</th>
                     </tr>
                 </thead>
                 <tbody id="bangDuLieu">
@@ -155,12 +159,19 @@
                 </tbody>
             </table>
         </div>
-    </div> <div id="printArea"></div>
+    </div>
+
+    <!-- KHU VỰC IN ẤN -->
+    <div id="printArea"></div>
 
     <script>
         // --- DÁN URL WEB APP CỦA BẠN VÀO ĐÂY ---
         const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzLKVv-ewmboA3h93HFxPcAWDkvg6wVbMPsWnJXtYcZgHfoYIgL7KMECh5eFX10V5mZZA/exec";
         let khoDuLieu = [];
+        
+        // CÁC BIẾN QUẢN LÝ TRẠNG THÁI "SỬA"
+        let isEditMode = false;
+        let maBVSuaCaNhan = ""; 
 
         function chuyenTab(tabName) {
             document.getElementById('tabNhapLieu').classList.add('hidden');
@@ -188,11 +199,12 @@
                 document.getElementById('formCaNhan').classList.add('hidden');
                 document.getElementById('formCungChung').classList.remove('hidden');
                 document.getElementById('khuVucMaBV').classList.remove('hidden');
-                layMaBVMoi();
+                if(!isEditMode) layMaBVMoi();
             }
         }
 
         function layMaBVMoi() {
+            if(isEditMode) return; // Đang sửa thì không lấy mã mới
             const inMa = document.getElementById('inMaBV');
             inMa.value = "Đang tải...";
             fetch(GOOGLE_APP_SCRIPT_URL).then(res => res.json())
@@ -200,40 +212,80 @@
                 .catch(() => inMa.value = "");
         }
 
-       function taoGiaoDienIn(hs) {
+        // --- HÀM MỚI: BẤM NÚT SỬA TỪ BẢNG TÌM KIẾM ---
+        function suaTuBang(index) {
+            const hs = khoDuLieu[index];
+            isEditMode = true; // Bật chế độ sửa
+            
+            // Đổi giao diện nút Lưu
+            document.getElementById('btnLuu').innerText = "✏️ Cập Nhật (Lưu Đè Lên Dòng Cũ)";
+            document.getElementById('btnLuu').style.background = "#f39c12";
+            document.getElementById('btnHuySua').classList.remove('hidden');
+            
+            // Đổ dữ liệu vào form
+            document.getElementById('loaiSo').value = hs.loai;
+            doiLoaiForm();
+            
+            document.getElementById('inTraiChu').value = hs.traiChu || "";
+            
+            if (hs.loai === "CaNhan") {
+                maBVSuaCaNhan = hs.maBV; // Lưu ngầm ID để tìm dòng
+                document.getElementById('inTen').value = hs.ten || "";
+                document.getElementById('inPhapDanh').value = hs.phapDanh || "";
+                document.getElementById('inSanh').value = hs.sanh || "";
+                document.getElementById('inMatAL').value = hs.matAL || "";
+                document.getElementById('inMatDL').value = hs.matDL || "";
+                document.getElementById('inTuoi').value = hs.tuoi || "";
+                document.getElementById('inPhoiTien').value = hs.phoiTien || "";
+            } else {
+                document.getElementById('inMaBV').value = hs.maBV;
+                document.getElementById('inDanhSachCC').value = hs.danhSachHLRaw || "";
+            }
+            
+            // Tự động chuyển về tab nhập liệu
+            chuyenTab('nhapLieu');
+            window.scrollTo(0, 0);
+        }
+
+        // --- HÀM MỚI: HỦY CHẾ ĐỘ SỬA ---
+        function huyCheDoSua() {
+            isEditMode = false;
+            maBVSuaCaNhan = "";
+            document.getElementById('btnLuu').innerText = "💾 Lưu Mới Lên Trang Tính";
+            document.getElementById('btnLuu').style.background = "#2e7d32";
+            document.getElementById('btnHuySua').classList.add('hidden');
+            
+            // Xóa rỗng form
+            document.querySelectorAll('input[type="text"], textarea').forEach(el => el.value='');
+            if (document.getElementById('loaiSo').value === 'CungChung') layMaBVMoi();
+        }
+
+        // --- THUẬT TOÁN IN GIỮ NGUYÊN ---
+        function taoGiaoDienIn(hs) {
             const kieuIn = document.getElementById('kieuIn').value;
             const traiChuHTML = hs.traiChu || "";
-            
             let inThongTinCauSieu = `<div class="title-red" style="border:none; margin-bottom:10px;">CẦU SIÊU</div>`;
             
             if(hs.loai === "CaNhan" || !hs.loai) {
-                // Đổ dữ liệu in Cá Nhân
                 inThongTinCauSieu += `<div class="hl-name">${hs.ten || ''}</div>`;
                 if(hs.phapDanh) inThongTinCauSieu += `<div class="pd-name">Pd: ${hs.phapDanh}</div>`;
                 if(hs.sanh) inThongTinCauSieu += `<div class="details"><b>Sanh:</b> ${hs.sanh}</div>`;
                 
-                // --- BẮT ĐẦU ĐOẠN SỬA LỖI NGÀY DƯƠNG LỊCH ---
                 let chuoiMatDL = hs.matDL || "";
-                
-                // Nếu là chuỗi thời gian tải từ Google Sheets về (có chữ T và Z)
                 if (chuoiMatDL.includes("T") && chuoiMatDL.includes(".000Z")) {
                     let d = new Date(chuoiMatDL);
                     let ngay = String(d.getDate()).padStart(2, '0');
                     let thang = String(d.getMonth() + 1).padStart(2, '0');
-                    let nam = d.getFullYear();
-                    chuoiMatDL = `(${ngay}/${thang}/${nam})`;
-                } 
-                // Nếu người dùng gõ tay nhưng quên ngoặc
-                else if (chuoiMatDL !== "" && !chuoiMatDL.includes("(")) {
+                    chuoiMatDL = `(${ngay}/${thang}/${d.getFullYear()})`;
+                } else if (chuoiMatDL !== "" && !chuoiMatDL.includes("(")) {
                     chuoiMatDL = `(${chuoiMatDL})`;
                 }
 
                 if(hs.matAL && chuoiMatDL) {
-                    inThongTinCauSieu += `<div class="details"><b>Mất:</b> ${hs.matAL} <span style="font-size: 14px;">${chuoiMatDL}</span></div>`;
+                    inThongTinCauSieu += `<div class="details"><b>Mất:</b> ${hs.matAL} <span style="font-size: 16px;">${chuoiMatDL}</span></div>`;
                 } else if (hs.matAL) {
                     inThongTinCauSieu += `<div class="details"><b>Mất:</b> ${hs.matAL}</div>`;
                 }
-                // --- KẾT THÚC ĐOẠN SỬA LỖI ---
 
                 if(hs.tuoi) {
                     let chuoiTuoi = hs.tuoi;
@@ -246,10 +298,8 @@
                 }
                 if(hs.phoiTien) inThongTinCauSieu += `<div class="phoi-tien"><u>Phối tiến:</u><br>${hs.phoiTien}</div>`;
             } else {
-                // Đổ dữ liệu in Cúng Chung
                 const textDanhSach = hs.danhSachHLRaw || "";
                 const lines = textDanhSach.split('\n');
-                
                 lines.forEach(line => {
                     if(line.trim() !== '') {
                         if(line.toLowerCase().includes('pd:') || line.toLowerCase().includes('tức:')) {
@@ -262,7 +312,6 @@
             }
 
             let finalHTML = "";
-
             const htmlMaBV_Ngan = (hs.maBV && hs.loai === 'CungChung') ? `<div class="ma-bv">Mã BV: ${hs.maBV}</div>` : '';
             const htmlMaBV_Dai = (hs.maBV && hs.loai === 'CungChung') ? `<span style="float:left; font-size: 14px; color:#000;">Mã BV: ${hs.maBV}</span>` : '';
 
@@ -271,7 +320,7 @@
                     <div class="half-page">
                         ${htmlMaBV_Ngan}
                         <div class="title-red" style="border-bottom: 1px solid #333; padding-bottom:5px;">TRAI CHỦ</div>
-                        <div class="tc-content">${hs.traiChu || ""}</div>
+                        <div class="tc-content">${traiChuHTML}</div>
                         <div class="cs-container-flex">${inThongTinCauSieu}</div>
                     </div>
                 `;
@@ -286,7 +335,7 @@
                                 ${htmlMaBV_Dai}
                                 TRAI CHỦ
                             </div>
-                            <div class="tc-content">${hs.traiChu || ""}</div>
+                            <div class="tc-content">${traiChuHTML}</div>
                             <div class="cs-block-flow">${inThongTinCauSieu}</div>
                         </div>
                     </div>
@@ -296,44 +345,34 @@
             return finalHTML;
         }
 
-        function thucHienLenhIn(hs) {
-            document.getElementById('printArea').innerHTML = taoGiaoDienIn(hs);
-            window.print();
-        }
+        function thucHienLenhIn(hs) { document.getElementById('printArea').innerHTML = taoGiaoDienIn(hs); window.print(); }
 
         function inTrucTiep() {
             const loai = document.getElementById('loaiSo').value;
-            let hs = {
-                loai: loai,
-                traiChu: document.getElementById('inTraiChu').value,
-                maBV: loai === 'CungChung' ? document.getElementById('inMaBV').value : null
-            };
-
+            let hs = { loai: loai, traiChu: document.getElementById('inTraiChu').value, maBV: loai === 'CungChung' ? document.getElementById('inMaBV').value : null };
             if(loai === 'CaNhan') {
-                hs.ten = document.getElementById('inTen').value;
-                hs.phapDanh = document.getElementById('inPhapDanh').value;
-                hs.sanh = document.getElementById('inSanh').value;
-                hs.matAL = document.getElementById('inMatAL').value;
-                hs.matDL = document.getElementById('inMatDL').value;
-                hs.tuoi = document.getElementById('inTuoi').value;
+                hs.ten = document.getElementById('inTen').value; hs.phapDanh = document.getElementById('inPhapDanh').value;
+                hs.sanh = document.getElementById('inSanh').value; hs.matAL = document.getElementById('inMatAL').value;
+                hs.matDL = document.getElementById('inMatDL').value; hs.tuoi = document.getElementById('inTuoi').value;
                 hs.phoiTien = document.getElementById('inPhoiTien').value;
-            } else {
-                hs.danhSachHLRaw = document.getElementById('inDanhSachCC').value;
-            }
+            } else { hs.danhSachHLRaw = document.getElementById('inDanhSachCC').value; }
             thucHienLenhIn(hs);
         }
 
         function inTuBang(index) { thucHienLenhIn(khoDuLieu[index]); }
 
+        // --- GỬI YÊU CẦU LƯU (HOẶC CẬP NHẬT) LÊN GOOGLE SHEETS ---
         function luuDuLieu() {
             const loai = document.getElementById('loaiSo').value;
             const payload = {
+                action: isEditMode ? "update" : "insert", // Xác định hành động gửi đi
                 loai: loai,
                 traiChu: document.getElementById('inTraiChu').value,
-                maBV: document.getElementById('inMaBV').value
             };
 
             if(loai === 'CaNhan') {
+                // Nếu đang sửa cá nhân, gửi kèm ID ẩn để Sheets biết sửa dòng nào
+                payload.maBV = isEditMode ? maBVSuaCaNhan : ""; 
                 payload.ten = document.getElementById('inTen').value;
                 payload.phapDanh = document.getElementById('inPhapDanh').value;
                 payload.sanh = document.getElementById('inSanh').value;
@@ -342,18 +381,19 @@
                 payload.tuoi = document.getElementById('inTuoi').value;
                 payload.phoiTien = document.getElementById('inPhoiTien').value;
             } else {
+                payload.maBV = document.getElementById('inMaBV').value; // Mã số Cúng chung
                 payload.danhSachHLRaw = document.getElementById('inDanhSachCC').value;
             }
 
             const txt = document.getElementById('trangThai');
-            txt.style.color = "blue"; txt.innerText = "Đang gửi lên Sheets...";
+            txt.style.color = "blue"; txt.innerText = isEditMode ? "Đang cập nhật lại..." : "Đang gửi lên Sheets...";
 
             fetch(GOOGLE_APP_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
                 .then(() => {
-                    txt.style.color = "green"; txt.innerText = "✅ Lưu thành công!";
-                    if(payload.loai === 'CungChung') layMaBVMoi();
+                    txt.style.color = "green"; txt.innerText = isEditMode ? "✅ Cập nhật thành công!" : "✅ Lưu thành công!";
+                    huyCheDoSua(); // Lưu/Cập nhật xong thì reset lại thành mode Thêm mới
                     
-                    document.querySelectorAll('input[type="text"], textarea').forEach(el => el.value='');
+                    // Xóa thông báo sau 3s
                     setTimeout(() => txt.innerText = "", 3000);
                 }).catch(() => {
                     txt.style.color = "red"; txt.innerText = "❌ Lỗi kết nối!";
@@ -377,9 +417,7 @@
             tbody.innerHTML = "";
 
             let ketQua = khoDuLieu;
-            if(loaiTim !== 'All') {
-                ketQua = ketQua.filter(hs => hs.loai === loaiTim);
-            }
+            if(loaiTim !== 'All') { ketQua = ketQua.filter(hs => hs.loai === loaiTim); }
 
             if(tuKhoa !== '') {
                 ketQua = ketQua.filter(hs => {
@@ -394,15 +432,12 @@
             const ketQuaHienThi = ketQua.slice(0, 50);
 
             if(ketQuaHienThi.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Không tìm thấy hồ sơ phù hợp!</td></tr>`;
-                return;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Không tìm thấy hồ sơ phù hợp!</td></tr>`; return;
             }
 
             ketQuaHienThi.forEach(hs => {
                 let hienThiTen = "";
-                
                 if (hs.loai === "CaNhan") {
-                    // Đã bổ sung Ngày mất Âm Lịch cho sớ Cá Nhân
                     const hienThiMatAL = hs.matAL ? `<br><span style="font-size:13px; color:#e67e22;">Ngày mất (AL): ${hs.matAL}</span>` : '';
                     hienThiTen = `<b>${hs.ten}</b>${hienThiMatAL}`;
                 } else {
@@ -410,21 +445,23 @@
                     if(hs.danhSachHLRaw) {
                         const lines = hs.danhSachHLRaw.split('\n').map(l => l.trim()).filter(l => l !== '');
                         const lineHopLe = lines.find(l => !l.toLowerCase().startsWith('pd:') && !l.toLowerCase().startsWith('tức:'));
-                        if(lineHopLe) {
-                            tenDauTien = lineHopLe.split('-')[0].trim(); 
-                        }
+                        if(lineHopLe) tenDauTien = lineHopLe.split('-')[0].trim(); 
                     }
                     hienThiTen = `Mã: ${hs.maBV} <br><b style="color:#b71c1c; font-size:16px;">${tenDauTien}</b> <br><span style="font-size:12px;color:#555;">(và những người khác...)</span>`;
                 }
 
                 const indexGoc = khoDuLieu.indexOf(hs);
 
+                // THÊM NÚT SỬA VÀO BẢNG
                 tbody.innerHTML += `
                     <tr>
                         <td>${hs.loai === "CaNhan" ? "Cá Nhân" : "Cúng Chung"}</td>
                         <td>${hienThiTen}</td>
                         <td>${hs.phapDanh || ''}</td>
-                        <td><button class="btn-in-nhanh" onclick="inTuBang(${indexGoc})">🖨️ In Lại</button></td>
+                        <td>
+                            <button class="btn-in-nhanh" style="background:#f39c12;" onclick="suaTuBang(${indexGoc})">✏️ Sửa</button>
+                            <button class="btn-in-nhanh" style="background:#d32f2f;" onclick="inTuBang(${indexGoc})">🖨️ In Lại</button>
+                        </td>
                     </tr>
                 `;
             });
@@ -434,7 +471,6 @@
             }
         }
 
-        // Lắng nghe sự kiện để tìm kiếm tức thì
         document.getElementById('txtTimKiem').addEventListener('input', hienThiBang);
         document.getElementById('loaiTimKiem').addEventListener('change', hienThiBang);
         
