@@ -37,26 +37,26 @@
             .half-page { width: 50%; height: 100%; border: 4px double #333; padding: 15px; box-sizing: border-box; display: flex; flex-direction: column; position: relative; }
             .cs-container-flex { margin-top: auto; padding-top: 20px; border-top: 2px dotted #000; }
 
-            .page-kieu-dai { width: 210mm; height: 297mm; position: relative; page-break-after: always; font-family: 'Times New Roman', serif; }
+            .page-kieu-dai { width: 210mm; height: 297mm; max-height: 297mm; position: relative; page-break-after: always; break-after: page; page-break-inside: avoid; break-inside: avoid; font-family: 'Times New Roman', serif; overflow: hidden; }
             .fake-box-l, .fake-box-r { position: absolute; top: 10mm; bottom: 10mm; width: 90mm; border: 4px double #333; box-sizing: border-box; }
             .fake-box-l { left: 10mm; } .fake-box-r { right: 10mm; }
             .content-flow { position: absolute; top: 15mm; bottom: 15mm; left: 15mm; right: 15mm; column-count: 2; column-gap: 20mm; column-fill: auto; z-index: 1; }
-            .cs-block-flow { margin-top: 60px; border-top: 2px dotted #000; padding-top: 20px; break-inside: avoid; }
+            .cs-block-flow { margin-top: 60px; border-top: 2px dotted #000; padding-top: 20px; }
 
            /* Định dạng chữ */
-            .ma-bv { position: absolute; top: 10px; left: 15px; font-size: 18px; font-weight: bold;} /* Mã Bài Vị */
-            .title-red { color: red !important; font-size: 28px; font-weight: bold; text-align: center; margin-bottom: 15px; text-transform: uppercase;} /* Tiêu đề Đỏ: TRAI CHỦ, CẦU SIÊU */
-            .tc-content { white-space: pre-line; line-height: 1.8; font-size: 24px; text-align: center; } /* Danh sách người cúng (Gia chủ) */
+            .ma-bv { position: absolute; top: 10px; left: 15px; font-size: 18px; font-weight: bold;} 
+            .title-red { color: red !important; font-size: 28px; font-weight: bold; text-align: center; margin-bottom: 15px; text-transform: uppercase;} 
+            .tc-content { white-space: pre-line; line-height: 1.8; font-size: 24px; text-align: center; } 
             
             /* Dành cho Cá Nhân */
-            .hl-name { font-size: 40px; font-weight: bold; margin: 15px 0; text-align: center;} /* Tên Hương Linh (Cá nhân) */
-            .pd-name { font-size: 26px; font-weight: bold; margin-bottom: 15px; text-align: center;} /* Pháp Danh (Cá nhân) */
-            .details { font-size: 22px; line-height: 1.8; margin-bottom: 5px; text-align: center; } /* Thông tin Sanh, Mất, Tuổi */
-            .phoi-tien { padding-top: 10px; margin-top: 15px; font-size: 22px; white-space: pre-line; text-align: left; line-height: 1.8; } /* Cầu siêu thêm (Phối tiến) */
+            .hl-name { font-size: 36px; font-weight: bold; margin: 15px 0; text-align: center;} 
+            .pd-name { font-size: 26px; font-weight: bold; margin-bottom: 15px; text-align: center;} 
+            .details { font-size: 22px; line-height: 1.8; margin-bottom: 5px; text-align: center; } 
+            .phoi-tien { font-size: 22px; text-align: left; line-height: 1.8; } 
             
             /* Dành cho Danh sách Cúng Chung */
-            .cc-list-name { font-size: 32px; font-weight: bold; text-align: center; margin-top: 10px; } /* Tên Hương Linh (Cúng chung) */
-            .cc-list-sub { font-size: 24px; font-weight: bold; text-align: center; margin-top: 2px; } /* Pháp Danh/Tức (Cúng chung) */
+            .cc-list-name { font-size: 32px; font-weight: bold; text-align: center; margin-top: 10px; break-after: avoid; page-break-after: avoid; } 
+            .cc-list-sub { font-size: 24px; font-weight: bold; text-align: center; margin-top: 2px; break-before: avoid; page-break-before: avoid; } 
         }
     </style>
 </head>
@@ -69,7 +69,6 @@
             <button class="tab-btn" id="btnTabTim" onclick="chuyenTab('timKiem')">🔍 Tìm Kiếm & In</button>
         </div>
 
-        <!-- TAB 1: NHẬP LIỆU -->
         <div id="tabNhapLieu">
             <div class="flex-row">
                 <div class="form-group">
@@ -98,7 +97,6 @@
                 <textarea id="inTraiChu" placeholder="VD: Lâm Minh Hà" style="height: 100px; text-align: center;"></textarea>
             </div>
 
-            <!-- Khung Cá Nhân -->
             <div id="formCaNhan">
                 <div class="flex-row">
                     <div><label>Tên Hương Linh</label><input type="text" id="inTen"></div>
@@ -114,11 +112,10 @@
                 </div>
                 <div class="form-group">
                     <label>Phối Tiến (Cầu siêu thêm)</label>
-                    <textarea id="inPhoiTien"></textarea>
+                    <textarea id="inPhoiTien" placeholder="Mỗi người 1 dòng..."></textarea>
                 </div>
             </div>
 
-            <!-- Khung Cúng Chung -->
             <div id="formCungChung" class="hidden">
                 <div class="form-group" style="margin-top: 15px;">
                     <label style="color: #b71c1c; border-bottom: 1px solid #ccc; padding-bottom: 5px;">Danh Sách Cầu Siêu (Mỗi người 1 dòng)</label>
@@ -126,7 +123,6 @@
                 </div>
             </div>
 
-            <!-- NÚT LƯU ĐÃ ĐƯỢC CHỈNH SỬA ĐỂ CÓ THỂ ĐỔI TÊN THÀNH "CẬP NHẬT" -->
             <button class="btn-action" id="btnLuu" style="background: #2e7d32;" onclick="luuDuLieu()">💾 Lưu Mới Lên Trang Tính</button>
             <button class="btn-action hidden" id="btnHuySua" style="background: #7f8c8d; margin-top: 5px;" onclick="huyCheDoSua()">❌ Hủy Chỉnh Sửa (Thêm Mới)</button>
             
@@ -134,7 +130,6 @@
             <p id="trangThai" style="text-align: center; margin-top: 10px; font-weight: bold;"></p>
         </div>
 
-        <!-- TAB 2: TÌM KIẾM -->
         <div id="tabTimKiem" class="hidden">
             <div class="search-box">
                 <select id="loaiTimKiem" style="width: 180px; font-weight: bold; color: #1976d2;">
@@ -161,15 +156,11 @@
         </div>
     </div>
 
-    <!-- KHU VỰC IN ẤN -->
     <div id="printArea"></div>
 
     <script>
-        // --- DÁN URL WEB APP CỦA BẠN VÀO ĐÂY ---
         const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzLKVv-ewmboA3h93HFxPcAWDkvg6wVbMPsWnJXtYcZgHfoYIgL7KMECh5eFX10V5mZZA/exec";
         let khoDuLieu = [];
-        
-        // CÁC BIẾN QUẢN LÝ TRẠNG THÁI "SỬA"
         let isEditMode = false;
         let maBVSuaCaNhan = ""; 
 
@@ -204,7 +195,7 @@
         }
 
         function layMaBVMoi() {
-            if(isEditMode) return; // Đang sửa thì không lấy mã mới
+            if(isEditMode) return; 
             const inMa = document.getElementById('inMaBV');
             inMa.value = "Đang tải...";
             fetch(GOOGLE_APP_SCRIPT_URL).then(res => res.json())
@@ -212,24 +203,21 @@
                 .catch(() => inMa.value = "");
         }
 
-        // --- HÀM MỚI: BẤM NÚT SỬA TỪ BẢNG TÌM KIẾM ---
         function suaTuBang(index) {
             const hs = khoDuLieu[index];
-            isEditMode = true; // Bật chế độ sửa
+            isEditMode = true; 
             
-            // Đổi giao diện nút Lưu
             document.getElementById('btnLuu').innerText = "✏️ Cập Nhật (Lưu Đè Lên Dòng Cũ)";
             document.getElementById('btnLuu').style.background = "#f39c12";
             document.getElementById('btnHuySua').classList.remove('hidden');
             
-            // Đổ dữ liệu vào form
             document.getElementById('loaiSo').value = hs.loai;
             doiLoaiForm();
             
             document.getElementById('inTraiChu').value = hs.traiChu || "";
             
             if (hs.loai === "CaNhan") {
-                maBVSuaCaNhan = hs.maBV; // Lưu ngầm ID để tìm dòng
+                maBVSuaCaNhan = hs.maBV; 
                 document.getElementById('inTen').value = hs.ten || "";
                 document.getElementById('inPhapDanh').value = hs.phapDanh || "";
                 document.getElementById('inSanh').value = hs.sanh || "";
@@ -242,12 +230,10 @@
                 document.getElementById('inDanhSachCC').value = hs.danhSachHLRaw || "";
             }
             
-            // Tự động chuyển về tab nhập liệu
             chuyenTab('nhapLieu');
             window.scrollTo(0, 0);
         }
 
-        // --- HÀM MỚI: HỦY CHẾ ĐỘ SỬA ---
         function huyCheDoSua() {
             isEditMode = false;
             maBVSuaCaNhan = "";
@@ -255,21 +241,26 @@
             document.getElementById('btnLuu').style.background = "#2e7d32";
             document.getElementById('btnHuySua').classList.add('hidden');
             
-            // Xóa rỗng form
             document.querySelectorAll('input[type="text"], textarea').forEach(el => el.value='');
             if (document.getElementById('loaiSo').value === 'CungChung') layMaBVMoi();
         }
 
-        // --- THUẬT TOÁN IN GIỮ NGUYÊN ---
         function taoGiaoDienIn(hs) {
             const kieuIn = document.getElementById('kieuIn').value;
             const traiChuHTML = hs.traiChu || "";
-            let inThongTinCauSieu = `<div class="title-red" style="border:none; margin-bottom:10px;">CẦU SIÊU</div>`;
-            
+            let finalHTML = "";
+
+            const htmlMaBV_Ngan = (hs.maBV && hs.loai === 'CungChung') ? `<div class="ma-bv">Mã BV: ${hs.maBV}</div>` : '';
+            const htmlMaBV_Dai = (hs.maBV && hs.loai === 'CungChung') ? `<span style="float:left; font-size: 14px; color:#000;">Mã BV: ${hs.maBV}</span>` : '';
+
+            // XỬ LÝ LOẠI CÁ NHÂN (CÓ PHỐI TIẾN DÀI)
             if(hs.loai === "CaNhan" || !hs.loai) {
-                inThongTinCauSieu += `<div class="hl-name">${hs.ten || ''}</div>`;
-                if(hs.phapDanh) inThongTinCauSieu += `<div class="pd-name">Pd: ${hs.phapDanh}</div>`;
-                if(hs.sanh) inThongTinCauSieu += `<div class="details"><b>Sanh:</b> ${hs.sanh}</div>`;
+                
+                // Khởi tạo khối thông tin chính
+                let mainInfoHTML = `<div class="title-red" style="border:none; margin-bottom:10px;">CẦU SIÊU</div>`;
+                mainInfoHTML += `<div class="hl-name">${hs.ten || ''}</div>`;
+                if(hs.phapDanh) mainInfoHTML += `<div class="pd-name">Pd: ${hs.phapDanh}</div>`;
+                if(hs.sanh) mainInfoHTML += `<div class="details"><b>Sanh:</b> ${hs.sanh}</div>`;
                 
                 let chuoiMatDL = hs.matDL || "";
                 if (chuoiMatDL.includes("T") && chuoiMatDL.includes(".000Z")) {
@@ -282,9 +273,9 @@
                 }
 
                 if(hs.matAL && chuoiMatDL) {
-                    inThongTinCauSieu += `<div class="details"><b>Mất:</b> ${hs.matAL} <span style="font-size: 16px;">${chuoiMatDL}</span></div>`;
+                    mainInfoHTML += `<div class="details"><b>Mất:</b> ${hs.matAL} <span style="font-size: 16px;">${chuoiMatDL}</span></div>`;
                 } else if (hs.matAL) {
-                    inThongTinCauSieu += `<div class="details"><b>Mất:</b> ${hs.matAL}</div>`;
+                    mainInfoHTML += `<div class="details"><b>Mất:</b> ${hs.matAL}</div>`;
                 }
 
                 if(hs.tuoi) {
@@ -294,53 +285,197 @@
                         const soTuoi = parseInt(timSo[0], 10);
                         chuoiTuoi = (soTuoi < 60) ? `Hưởng dương: ${soTuoi} tuổi` : `Hưởng thọ: ${soTuoi} tuổi`;
                     }
-                    inThongTinCauSieu += `<div class="details" style="text-align:center; margin-top:10px;">${chuoiTuoi}</div>`;
+                    mainInfoHTML += `<div class="details" style="text-align:center; margin-top:10px;">${chuoiTuoi}</div>`;
                 }
-                if(hs.phoiTien) inThongTinCauSieu += `<div class="phoi-tien"><u>Phối tiến:</u><br>${hs.phoiTien}</div>`;
-            } else {
+
+                // Cắt lọc danh sách Phối Tiến
+                let phoiTienItems = [];
+                if (hs.phoiTien) {
+                    const ptLines = hs.phoiTien.split('\n');
+                    let currItem = "";
+                    ptLines.forEach(line => {
+                        if(line.trim() !== '') {
+                            if(line.toLowerCase().includes('pd:') || line.toLowerCase().includes('tức:')) {
+                                currItem += `<div class="phoi-tien" style="margin-top:2px;">${line.trim()}</div>`;
+                            } else {
+                                if (currItem !== "") phoiTienItems.push(currItem);
+                                currItem = `<div class="phoi-tien" style="font-weight:bold; margin-top:5px;">${line.trim()}</div>`;
+                            }
+                        }
+                    });
+                    if (currItem !== "") phoiTienItems.push(currItem);
+                }
+                
+                if (kieuIn === "ngan") {
+                    let fullPhoiTienHTML = mainInfoHTML;
+                    if (phoiTienItems.length > 0) {
+                        fullPhoiTienHTML += `<div class="phoi-tien" style="padding-top:10px; margin-top:15px;"><u>Phối tiến:</u></div>`;
+                        phoiTienItems.forEach(item => fullPhoiTienHTML += item);
+                    }
+                    
+                    const templateNuaTo = `
+                        <div class="half-page">
+                            <div class="title-red" style="border-bottom: 1px solid #333; padding-bottom:5px;">TRAI CHỦ</div>
+                            <div class="tc-content">${traiChuHTML}</div>
+                            <div class="cs-container-flex">${fullPhoiTienHTML}</div>
+                        </div>
+                    `;
+                    finalHTML = `<div class="page-kieu-ngan">${templateNuaTo}${templateNuaTo}</div>`;
+                } else {
+                    let pagesHTML = "";
+                    let currentIndex = 0;
+                    let pageNum = 0;
+
+                    if (phoiTienItems.length === 0) {
+                        // Nếu không có phối tiến, in 1 trang bình thường
+                        pagesHTML += `
+                            <div class="page-kieu-dai">
+                                <div class="fake-box-l"></div>
+                                <div class="fake-box-r"></div>
+                                <div class="content-flow">
+                                    <div class="title-red" style="border-bottom: 1px solid #333; padding-bottom:5px;">
+                                        TRAI CHỦ
+                                    </div>
+                                    <div class="tc-content">${traiChuHTML}</div>
+                                    <div class="cs-block-flow">${mainInfoHTML}</div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        // Nếu CÓ PHỐI TIẾN DÀI -> CHIA TRANG TỰ ĐỘNG
+                        while (currentIndex < phoiTienItems.length || pageNum === 0) {
+                            pageNum++;
+                            let isFirstPage = (pageNum === 1);
+                            
+                            // Trang 1 chừa chỗ cho Trai Chủ + HL Chính (chỉ nhét được ~6 người)
+                            // Trang 2 rỗng hoàn toàn (nhét được ~18 người)
+                            let itemsForThisPage = isFirstPage ? 6 : 18; 
+                            
+                            let chunk = phoiTienItems.slice(currentIndex, currentIndex + itemsForThisPage);
+                            currentIndex += itemsForThisPage;
+
+                            let headerHTML = "";
+                            let csBlockStyle = "";
+                            let blockContent = "";
+
+                            if (isFirstPage) {
+                                headerHTML = `
+                                    <div class="title-red" style="border-bottom: 1px solid #333; padding-bottom:5px;">
+                                        TRAI CHỦ
+                                    </div>
+                                    <div class="tc-content">${traiChuHTML}</div>
+                                `;
+                                blockContent = mainInfoHTML + `<div class="phoi-tien" style="padding-top:10px; margin-top:15px;"><u>Phối tiến:</u></div>`;
+                            } else {
+                                // MỚI: Ẩn Gia Chủ ở trang 2 trở đi, kẻ viền khung danh sách và gạch dưới chữ CẦU SIÊU
+                                csBlockStyle = `style="margin-top: 0; border: 1px solid #333; padding: 15px; border-radius: 5px;"`;
+                                blockContent = `
+                                    <div class="title-red" style="border-bottom: 1px dashed #333; padding-bottom:10px; margin-bottom:12px; margin-top:0;">CẦU SIÊU</div>
+                                    <div class="phoi-tien" style="margin-top:0; margin-bottom:10px;"><u>Phối tiến (tiếp theo):</u></div>
+                                `;
+                            }
+                            
+                            // Nối tên phối tiến vào block
+                            chunk.forEach(item => blockContent += item);
+                            
+                            pagesHTML += `
+                                <div class="page-kieu-dai">
+                                    <div class="fake-box-l"></div>
+                                    <div class="fake-box-r"></div>
+                                    <div class="content-flow">
+                                        ${headerHTML}
+                                        <div class="cs-block-flow" ${csBlockStyle}>${blockContent}</div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    // Nối kết quả 2 lần (để thỏa mãn điều kiện 2 bản in)
+                    finalHTML = pagesHTML + pagesHTML;
+                }
+            } 
+            // XỬ LÝ LOẠI CÚNG CHUNG
+            else {
                 const textDanhSach = hs.danhSachHLRaw || "";
                 const lines = textDanhSach.split('\n');
+                
+                let danhSachItems = [];
+                let currentItem = "";
+                
                 lines.forEach(line => {
                     if(line.trim() !== '') {
                         if(line.toLowerCase().includes('pd:') || line.toLowerCase().includes('tức:')) {
-                            inThongTinCauSieu += `<div class="cc-list-sub">${line.trim()}</div>`;
+                            currentItem += `<div class="cc-list-sub">${line.trim()}</div>`;
                         } else {
-                            inThongTinCauSieu += `<div class="cc-list-name">${line.trim()}</div>`;
+                            if (currentItem !== "") danhSachItems.push(currentItem);
+                            currentItem = `<div class="cc-list-name">${line.trim()}</div>`;
                         }
                     }
                 });
-            }
+                if (currentItem !== "") danhSachItems.push(currentItem);
 
-            let finalHTML = "";
-            const htmlMaBV_Ngan = (hs.maBV && hs.loai === 'CungChung') ? `<div class="ma-bv">Mã BV: ${hs.maBV}</div>` : '';
-            const htmlMaBV_Dai = (hs.maBV && hs.loai === 'CungChung') ? `<span style="float:left; font-size: 14px; color:#000;">Mã BV: ${hs.maBV}</span>` : '';
-
-            if (kieuIn === "ngan") {
-                const templateNuaTo = `
-                    <div class="half-page">
-                        ${htmlMaBV_Ngan}
-                        <div class="title-red" style="border-bottom: 1px solid #333; padding-bottom:5px;">TRAI CHỦ</div>
-                        <div class="tc-content">${traiChuHTML}</div>
-                        <div class="cs-container-flex">${inThongTinCauSieu}</div>
-                    </div>
-                `;
-                finalHTML = `<div class="page-kieu-ngan">${templateNuaTo}${templateNuaTo}</div>`;
-            } else {
-                const templateToA4Dai = `
-                    <div class="page-kieu-dai">
-                        <div class="fake-box-l"></div>
-                        <div class="fake-box-r"></div>
-                        <div class="content-flow">
-                            <div class="title-red" style="border-bottom: 1px solid #333; padding-bottom:5px;">
-                                ${htmlMaBV_Dai}
-                                TRAI CHỦ
-                            </div>
+                if (kieuIn === "ngan") {
+                    let inThongTinCauSieu = `<div class="title-red" style="border:none; margin-bottom:10px;">CẦU SIÊU</div>`;
+                    danhSachItems.forEach(item => inThongTinCauSieu += item);
+                    
+                    const templateNuaTo = `
+                        <div class="half-page">
+                            ${htmlMaBV_Ngan}
+                            <div class="title-red" style="border-bottom: 1px solid #333; padding-bottom:5px;">TRAI CHỦ</div>
                             <div class="tc-content">${traiChuHTML}</div>
-                            <div class="cs-block-flow">${inThongTinCauSieu}</div>
+                            <div class="cs-container-flex">${inThongTinCauSieu}</div>
                         </div>
-                    </div>
-                `;
-                finalHTML = templateToA4Dai + templateToA4Dai; 
+                    `;
+                    finalHTML = `<div class="page-kieu-ngan">${templateNuaTo}${templateNuaTo}</div>`;
+                } else {
+                    let pagesHTML = "";
+                    let currentIndex = 0;
+                    let pageNum = 0;
+                    
+                    if (danhSachItems.length === 0) danhSachItems = ["<div class='cc-list-name'>&nbsp;</div>"];
+
+                    while (currentIndex < danhSachItems.length || pageNum === 0) {
+                        pageNum++;
+                        let isFirstPage = (pageNum === 1);
+                        
+                        let itemsForThisPage = isFirstPage ? 12 : 18; 
+                        
+                        let chunk = danhSachItems.slice(currentIndex, currentIndex + itemsForThisPage);
+                        currentIndex += itemsForThisPage;
+
+                        let inThongTinCauSieu = isFirstPage ? `<div class="title-red" style="border:none; margin-bottom:10px;">CẦU SIÊU</div>` : ``;
+                        chunk.forEach(item => inThongTinCauSieu += item);
+                        
+                        let headerHTML = "";
+                        let csBlockStyle = "";
+
+                        if (isFirstPage) {
+                            headerHTML = `
+                                <div class="title-red" style="border-bottom: 1px solid #333; padding-bottom:5px;">
+                                    ${htmlMaBV_Dai}
+                                    TRAI CHỦ
+                                </div>
+                                <div class="tc-content">${traiChuHTML}</div>
+                            `;
+                        } else {
+                            csBlockStyle = `style="margin-top: 0; border-top: none; padding-top: 0;"`;
+                        }
+                        
+                        pagesHTML += `
+                            <div class="page-kieu-dai">
+                                <div class="fake-box-l"></div>
+                                <div class="fake-box-r"></div>
+                                <div class="content-flow">
+                                    ${headerHTML}
+                                    <div class="cs-block-flow" ${csBlockStyle}>${inThongTinCauSieu}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    finalHTML = pagesHTML + pagesHTML;
+                }
             }
             return finalHTML;
         }
@@ -361,17 +496,15 @@
 
         function inTuBang(index) { thucHienLenhIn(khoDuLieu[index]); }
 
-        // --- GỬI YÊU CẦU LƯU (HOẶC CẬP NHẬT) LÊN GOOGLE SHEETS ---
         function luuDuLieu() {
             const loai = document.getElementById('loaiSo').value;
             const payload = {
-                action: isEditMode ? "update" : "insert", // Xác định hành động gửi đi
+                action: isEditMode ? "update" : "insert", 
                 loai: loai,
                 traiChu: document.getElementById('inTraiChu').value,
             };
 
             if(loai === 'CaNhan') {
-                // Nếu đang sửa cá nhân, gửi kèm ID ẩn để Sheets biết sửa dòng nào
                 payload.maBV = isEditMode ? maBVSuaCaNhan : ""; 
                 payload.ten = document.getElementById('inTen').value;
                 payload.phapDanh = document.getElementById('inPhapDanh').value;
@@ -381,7 +514,7 @@
                 payload.tuoi = document.getElementById('inTuoi').value;
                 payload.phoiTien = document.getElementById('inPhoiTien').value;
             } else {
-                payload.maBV = document.getElementById('inMaBV').value; // Mã số Cúng chung
+                payload.maBV = document.getElementById('inMaBV').value;
                 payload.danhSachHLRaw = document.getElementById('inDanhSachCC').value;
             }
 
@@ -391,9 +524,7 @@
             fetch(GOOGLE_APP_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
                 .then(() => {
                     txt.style.color = "green"; txt.innerText = isEditMode ? "✅ Cập nhật thành công!" : "✅ Lưu thành công!";
-                    huyCheDoSua(); // Lưu/Cập nhật xong thì reset lại thành mode Thêm mới
-                    
-                    // Xóa thông báo sau 3s
+                    huyCheDoSua(); 
                     setTimeout(() => txt.innerText = "", 3000);
                 }).catch(() => {
                     txt.style.color = "red"; txt.innerText = "❌ Lỗi kết nối!";
@@ -452,7 +583,6 @@
 
                 const indexGoc = khoDuLieu.indexOf(hs);
 
-                // THÊM NÚT SỬA VÀO BẢNG
                 tbody.innerHTML += `
                     <tr>
                         <td>${hs.loai === "CaNhan" ? "Cá Nhân" : "Cúng Chung"}</td>
