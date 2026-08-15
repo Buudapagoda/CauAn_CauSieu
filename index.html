@@ -5,11 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Quản Lý Ghi Danh Chùa Bửu Đà</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #e9ecef; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .menu-container { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; max-width: 600px; width: 100%; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #e9ecef; 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; /* Cho phép giãn nở theo chiều dọc nếu kết quả nhiều */
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+        
+        .menu-container { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+            text-align: center; 
+            max-width: 700px; /* Nới rộng để vừa thanh tìm kiếm */
+            width: 100%; 
+        }
+        
         h1 { color: #2c3e50; margin-bottom: 10px; }
         p { color: #666; margin-bottom: 30px; }
         
+        /* --- CSS CHO THANH TÌM KIẾM --- */
+        .search-container { display: flex; gap: 10px; margin-bottom: 30px; }
+        .search-input { 
+            flex: 1; padding: 15px; border: 2px solid #ddd; 
+            border-radius: 8px; font-size: 16px; outline: none; transition: 0.3s; 
+        }
+        .search-input:focus { border-color: #2c3e50; box-shadow: 0 0 8px rgba(44,62,80,0.2); }
+        .search-btn { 
+            padding: 15px 25px; background: #2c3e50; color: white; border: none; 
+            border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; 
+            white-space: nowrap;
+        }
+        .search-btn:hover { background: #1a252f; }
+
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         
         .menu-card { display: block; text-decoration: none; padding: 30px 20px; border-radius: 8px; color: white; font-size: 20px; font-weight: bold; transition: transform 0.2s, box-shadow 0.2s; }
@@ -18,13 +52,35 @@
         .card-cau-an { background: linear-gradient(135deg, #28a745, #20c997); }
         .card-cau-sieu { background: linear-gradient(135deg, #007bff, #17a2b8); }
         
-        /* Màu vàng cam trang nghiêm cho mục Bài Vị và cho trải dài 2 cột */
         .card-bai-vi { 
             background: linear-gradient(135deg, #f39c12, #d35400); 
             grid-column: span 2; 
         }
         
         .icon { font-size: 40px; margin-bottom: 15px; display: block; }
+
+        /* --- CSS CHO KHUNG KẾT QUẢ TÌM KIẾM --- */
+        #ketQuaDiv { 
+            display: none; 
+            text-align: left; 
+            background: #f8f9fa; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin-top: 25px;
+            max-height: 500px; 
+            overflow-y: auto; 
+        }
+        #ketQuaDiv h3 { margin-top: 20px; margin-bottom: 10px; font-size: 17px; color: #333; border-bottom: 2px solid #ccc; padding-bottom: 5px; }
+        #ketQuaDiv h3:first-child { margin-top: 0; }
+        .result-item { 
+            background: white; border: 1px solid #eee; padding: 12px; margin-bottom: 10px; 
+            border-radius: 6px; cursor: pointer; transition: 0.2s; border-left: 4px solid #ccc;
+        }
+        .result-item:hover { background: #f1f1f1; transform: translateX(5px); box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+        .res-cau-an { border-left-color: #28a745; }
+        .res-cau-sieu { border-left-color: #007bff; }
+        .res-bai-vi { border-left-color: #f39c12; }
     </style>
 </head>
 <body>
@@ -33,6 +89,13 @@
     <h1>CHÙA BỬU ĐÀ</h1>
     <p>Hệ Thống Quản Lý Ghi Danh - Vui lòng chọn danh mục</p>
     
+    <!-- KHU VỰC THANH TÌM KIẾM CHUNG -->
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Nhập tên gia chủ, tên người, mã Bài Vị...">
+        <button onclick="timKiemTongHop()" class="search-btn">🔍 Tìm Trên Mây</button>
+    </div>
+
+    <!-- KHU VỰC MENU NÚT BẤM -->
     <div class="menu-grid">
         <a href="CauAn.html" class="menu-card card-cau-an">
             <span class="icon">🌸</span>
@@ -49,7 +112,124 @@
             IN SỚ & BÀI VỊ
         </a>
     </div>
+
+    <!-- KHU VỰC HIỂN THỊ KẾT QUẢ TÌM KIẾM -->
+    <div id="ketQuaDiv"></div>
 </div>
+
+<script>
+    // Cho phép ấn Enter để tìm kiếm thay vì phải dùng chuột nhấn nút
+    document.getElementById("searchInput").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            timKiemTongHop();
+        }
+    });
+
+    async function timKiemTongHop() {
+        const tuKhoa = document.getElementById('searchInput').value.toLowerCase().trim();
+        const ketQuaDiv = document.getElementById('ketQuaDiv');
+        
+        if (tuKhoa === "") {
+            ketQuaDiv.innerHTML = "";
+            ketQuaDiv.style.display = 'none';
+            return;
+        }
+
+        ketQuaDiv.style.display = 'block';
+        ketQuaDiv.innerHTML = "<div style='text-align:center; padding: 20px; color: #0056b3; font-weight: bold;'>⏳ Đang kết nối lên Google Sheets tải dữ liệu...</div>";
+
+        // Link API mà bạn đang sử dụng ở các file
+        const URL_CAU_AN_SIEU = 'https://script.google.com/macros/s/AKfycbxLxVKQ1sHbYhsVHT9gHMXJu3BT4aumAiWM74gzY9dMlytpvwQm65Zjx_sIFBysQ-sB/exec';
+        const URL_BAI_VI = 'https://script.google.com/macros/s/AKfycbzLKVv-ewmboA3h93HFxPcAWDkvg6wVbMPsWnJXtYcZgHfoYIgL7KMECh5eFX10V5mZZA/exec';
+
+        try {
+            // Tải dữ liệu song song 3 mục cùng một lúc để tăng tốc độ
+            const [resCauAn, resCauSieu, resBaiVi] = await Promise.all([
+                fetch(URL_CAU_AN_SIEU + '?sheetName=CauAn').then(r => r.json()).catch(() => null),
+                fetch(URL_CAU_AN_SIEU + '?sheetName=CauSieu').then(r => r.json()).catch(() => null),
+                fetch(URL_BAI_VI + '?action=search').then(r => r.json()).catch(() => null)
+            ]);
+
+            let htmlRender = "";
+
+            // --- 1. XỬ LÝ DỮ LIỆU CẦU AN ---
+            // Lấy từ Sheets, nếu Sheets bị lỗi (null) thì lấy dự phòng từ máy tính (localStorage)
+            let dataCauAn = (resCauAn && resCauAn.status === 'success') ? resCauAn.data : (JSON.parse(localStorage.getItem('cauAnData')) || []);
+            const timCauAn = dataCauAn.filter(gd => 
+                (gd.giaChu && gd.giaChu.toLowerCase().includes(tuKhoa)) || 
+                (gd.diaChi && gd.diaChi.toLowerCase().includes(tuKhoa)) || 
+                (gd.danhSach && gd.danhSach.toLowerCase().includes(tuKhoa))
+            );
+
+            if (timCauAn.length > 0) {
+                htmlRender += `<h3>🌸 Cầu An (${timCauAn.length} kết quả)</h3>`;
+                timCauAn.forEach(item => {
+                    let trichDoan = (item.danhSach || "").replace(/\n/g, ', ').substring(0, 80);
+                    htmlRender += `
+                    <div class="result-item res-cau-an" onclick="window.location.href='CauAn.html'">
+                        <strong style="color:#1e7e34;">Gia chủ: ${item.giaChu}</strong> (Địa chỉ: ${item.diaChi})<br>
+                        <span style="font-size: 13px; color: #555;"><i>Cầu an cho: ${trichDoan}...</i></span>
+                    </div>`;
+                });
+            }
+
+            // --- 2. XỬ LÝ DỮ LIỆU CẦU SIÊU ---
+            let dataCauSieu = (resCauSieu && resCauSieu.status === 'success') ? resCauSieu.data : (JSON.parse(localStorage.getItem('cauSieuDataV4')) || []);
+            const timCauSieu = dataCauSieu.filter(gd => 
+                (gd.giaChu && gd.giaChu.toLowerCase().includes(tuKhoa)) || 
+                (gd.diaChi && gd.diaChi.toLowerCase().includes(tuKhoa)) || 
+                (gd.danhSach && gd.danhSach.toLowerCase().includes(tuKhoa))
+            );
+
+            if (timCauSieu.length > 0) {
+                htmlRender += `<h3>☸️ Cầu Siêu (${timCauSieu.length} kết quả)</h3>`;
+                timCauSieu.forEach(item => {
+                    let trichDoan = (item.danhSach || "").replace(/\n/g, ', ').substring(0, 80);
+                    htmlRender += `
+                    <div class="result-item res-cau-sieu" onclick="window.location.href='CauSieu.html'">
+                        <strong style="color:#0056b3;">Gia chủ: ${item.giaChu}</strong> (Địa chỉ: ${item.diaChi})<br>
+                        <span style="font-size: 13px; color: #555;"><i>Cầu siêu cho: ${trichDoan}...</i></span>
+                    </div>`;
+                });
+            }
+
+            // --- 3. XỬ LÝ DỮ LIỆU BÀI VỊ ---
+            let dataBaiVi = Array.isArray(resBaiVi) ? resBaiVi : [];
+            const timBaiVi = dataBaiVi.filter(hs => {
+                let matchCaNhan = hs.loai === "CaNhan" && ((hs.ten && hs.ten.toLowerCase().includes(tuKhoa)) || (hs.phapDanh && hs.phapDanh.toLowerCase().includes(tuKhoa)) || (hs.traiChu && hs.traiChu.toLowerCase().includes(tuKhoa)));
+                let matchCungChung = hs.loai === "CungChung" && ((hs.maBV && String(hs.maBV).includes(tuKhoa)) || (hs.danhSachHLRaw && hs.danhSachHLRaw.toLowerCase().includes(tuKhoa)) || (hs.traiChu && hs.traiChu.toLowerCase().includes(tuKhoa)));
+                return matchCaNhan || matchCungChung;
+            });
+
+            if (timBaiVi.length > 0) {
+                let bvHTML = `<h3>📜 Sớ & Bài Vị (${timBaiVi.length} kết quả)</h3>`;
+                timBaiVi.forEach(item => {
+                    let hienThiNguoiMat = item.loai === "CaNhan" ? item.ten : `Mã BV: ${item.maBV}`;
+                    let phapDanhTag = item.phapDanh ? ` - Pháp danh: ${item.phapDanh}` : "";
+                    
+                    bvHTML += `
+                    <div class="result-item res-bai-vi" onclick="window.location.href='BaiVi.html'">
+                        <strong style="color: #d35400;">Trai chủ: ${item.traiChu}</strong><br>
+                        <span style="font-size: 13px; color: #555;">Hương linh: ${hienThiNguoiMat}${phapDanhTag} (${item.loai === "CaNhan" ? "Cá Nhân" : "Cúng Chung"})</span>
+                    </div>`;
+                });
+                htmlRender += bvHTML;
+            }
+
+            // --- IN KẾT QUẢ CUỐI CÙNG ---
+            if (htmlRender === "") {
+                ketQuaDiv.innerHTML = "<div style='text-align:center; padding: 20px; color: #dc3545;'>Không tìm thấy kết quả nào phù hợp trên hệ thống!</div>";
+            } else {
+                ketQuaDiv.innerHTML = htmlRender;
+            }
+
+        } catch (error) {
+            console.error(error);
+            ketQuaDiv.innerHTML = "<div style='text-align:center; padding: 20px; color: #dc3545;'>Lỗi mạng! Không thể kết nối tới máy chủ Google Sheets.</div>";
+        }
+    }
+</script>
 
 </body>
 </html>
