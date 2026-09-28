@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Sớ & Bài Vị</title>
     <style>
-        /* --- GIAO DIỆN WEB CƠ BẢN --- */
         body { font-family: Arial, sans-serif; background: #e9ecef; margin: 0; padding: 20px; transition: background 0.3s; }
         .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
@@ -25,7 +24,7 @@
         th { background-color: #f5f5f5; }
         .btn-in-nhanh { color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; margin-right: 5px; margin-bottom: 5px; }
 
-        /* --- CSS CHẾ ĐỘ XEM TRƯỚC VÀ CHỈNH SỬA --- */
+        /* Preview Mode */
         body.preview-mode { background: #525659; }
         body.preview-mode .container { display: none !important; }
         body.preview-mode #printArea { display: flex; flex-direction: column; align-items: center; padding: 100px 0 60px 0; gap: 30px; }
@@ -41,55 +40,25 @@
         .btn-preview { padding: 12px 25px; border: none; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: transform 0.2s; }
         .btn-preview:hover { transform: scale(1.05); }
 
-        /* --- CSS BỐ CỤC KHỔ GIẤY CHUẨN --- */
         #printArea { display: none; }
-        
         .page-in { 
-            width: 210mm; 
-            height: 297mm; 
-            padding: 10mm; 
-            box-sizing: border-box; 
-            page-break-after: always; /* Luôn ngắt trang khi xem trước */
-            font-family: 'Times New Roman', serif; 
-            background: white; 
-            overflow: hidden; 
-            display: flex; 
-            justify-content: space-between;
-            margin: 0 auto; /* Căn giữa khi xem trước */
+            width: 210mm; height: 297mm; padding: 10mm; box-sizing: border-box; 
+            page-break-after: always; font-family: 'Times New Roman', serif; background: white; 
+            overflow: hidden; display: flex; justify-content: space-between; margin: 0 auto; 
         }
-        
         .half-page { 
-            width: 90mm; /* Kích thước chuẩn bằng 1 nửa khổ A4 có trừ lề */
-            height: 277mm; 
-            border: 4px double #333; 
-            padding: 15px; 
-            box-sizing: border-box; 
-            position: relative; 
-            display: block;
+            width: 90mm; height: 277mm; border: 4px double #333; padding: 15px; 
+            box-sizing: border-box; position: relative; display: block; 
         }
-
         .top-part { break-inside: avoid; }
-
-        /* Kiểu ít người -> Cầu siêu neo chặt dưới đáy */
         .kieu-ngan .bottom-part { 
-            position: absolute; 
-            bottom: 15px; 
-            left: 15px; 
-            right: 15px; 
-            border-top: 2px dotted #000; 
-            padding-top: 20px; 
-            break-inside: avoid; 
+            position: absolute; bottom: 15px; left: 15px; right: 15px; 
+            border-top: 2px dotted #000; padding-top: 20px; break-inside: avoid; 
         }
-
-        /* Kiểu nhiều người -> Cầu siêu nằm tự nhiên ngay dưới Trai chủ */
         .kieu-dai .bottom-part { 
-            position: relative; 
-            margin-top: 20px; 
-            border-top: 2px dotted #000; 
-            padding-top: 20px; 
+            position: relative; margin-top: 20px; border-top: 2px dotted #000; padding-top: 20px; 
         }
 
-        /* --- ĐỊNH DẠNG CHỮ TO IN ẤN --- */
         .ma-bv { position: absolute; top: 10px; left: 15px; font-size: 18px; font-weight: bold;}
         .title-red { color: red !important; font-size: 28px; font-weight: bold; text-align: center; margin-bottom: 15px; text-transform: uppercase;}
         .tc-content { white-space: pre-line; line-height: 1.8; font-size: 22px; text-align: center; margin-bottom: 15px;}
@@ -101,67 +70,16 @@
         .cc-list-name { font-size: 32px; font-weight: bold; text-align: center; margin-top: 10px; }
         .cc-list-sub { font-size: 24px; font-weight: bold; text-align: center; margin-top: 2px; }
 
-        /* --- LỆNH XỬ LÝ KHI BẤM IN RA GIẤY THẬT (KHẮC PHỤC TRANG TRẮNG) --- */
-            @media print {
+        @media print {
             @page { size: A4 portrait; margin: 0; }
-            
-            body, html { 
-                padding: 0 !important; 
-                margin: 0 !important; 
-                background: white !important; 
-                -webkit-print-color-adjust: exact; 
-                print-color-adjust: exact; 
-                height: auto !important;
-            }
-            
-            /* 1. Ép ẩn hoàn toàn các thành phần không in, tránh tạo khoảng trống */
-            .container, #previewActions { 
-                display: none !important; 
-                height: 0 !important;
-                overflow: hidden !important;
-            }
-            
-            /* 2. Đưa vùng in neo chặt lên góc trên cùng bên trái, TRIỆT TIÊU TRANG TRẮNG SỐ 1 */
-            #printArea { 
-                display: block !important; 
-                position: absolute !important;
-                top: 0 !important;
-                left: 0 !important;
-                padding: 0 !important; 
-                margin: 0 !important; 
-                width: 100% !important; 
-            }
-            
-            /* 3. Thu nhỏ chiều cao tờ Sớ một chút (296mm) để TRIỆT TIÊU TRANG TRẮNG SỐ 3 */
-            .page-in { 
-                margin: 0 !important; 
-                padding: 10mm !important;
-                border: none !important; 
-                box-shadow: none !important; 
-                width: 210mm !important; 
-                height: 296mm !important; /* Dùng 296mm thay vì 297mm an toàn hơn */
-                box-sizing: border-box !important;
-                break-after: page; /* Lệnh ngắt trang đời mới */
-                page-break-after: always; /* Lệnh ngắt trang đời cũ dự phòng */
-                break-inside: avoid; 
-                page-break-inside: avoid;
-                overflow: hidden !important; 
-            }
-            
-            /* 4. Lệnh dọn dẹp: Xóa ngắt trang ở tờ cuối cùng */
-            .page-in:last-child {
-                break-after: auto !important;
-                page-break-after: auto !important;
-            }
-
-            .half-page {
-                height: 276mm !important; /* Chiều cao an toàn không làm tràn trang */
-                box-sizing: border-box !important;
-            }
-
+            body, html { padding: 0 !important; margin: 0 !important; background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; height: auto !important; }
+            .container, #previewActions { display: none !important; height: 0 !important; overflow: hidden !important; }
+            #printArea { display: block !important; position: absolute !important; top: 0 !important; left: 0 !important; padding: 0 !important; margin: 0 !important; width: 100% !important; }
+            .page-in { margin: 0 !important; padding: 10mm !important; border: none !important; box-shadow: none !important; width: 210mm !important; height: 296mm !important; box-sizing: border-box !important; break-after: page; page-break-after: always; break-inside: avoid; page-break-inside: avoid; overflow: hidden !important; }
+            .page-in:last-child { break-after: auto !important; page-break-after: auto !important; }
+            .half-page { height: 276mm !important; box-sizing: border-box !important; }
             [contenteditable="true"] { outline: none !important; background: transparent !important; box-shadow: none !important; }
             .editing-line { outline: none !important; background: transparent !important; }
-         
         }
     </style>
 </head>
@@ -233,8 +151,9 @@
                     <option value="CungChung">Chỉ Cúng Chung</option>
                 </select>
                 <input type="text" id="txtTimKiem" placeholder="Nhập tên Hương Linh hoặc Mã BV để tìm...">
-                <button class="btn-action" style="width: auto; margin-top: 0; background: #2e7d32;" onclick="taiDuLieuTuSheets()">🔄 Tải Dữ Liệu</button>
+                <button class="btn-action" id="btnTaiDuLieu" style="width: auto; margin-top: 0; background: #2e7d32;" onclick="taiDuLieuTuSheets(true)">🔄 Tải Lại Dữ Liệu</button>
             </div>
+            <div id="thongBaoSoLuong" style="font-size: 13px; color: #555; margin-bottom: 8px;"></div>
             <table>
                 <thead>
                     <tr>
@@ -245,7 +164,7 @@
                     </tr>
                 </thead>
                 <tbody id="bangDuLieu">
-                    <tr><td colspan="4" style="text-align:center;">Bấm "Tải Dữ Liệu" để đồng bộ từ Google Sheets</td></tr>
+                    <tr><td colspan="4" style="text-align:center;">Đang khởi tạo dữ liệu...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -255,7 +174,6 @@
         <div class="toolbar-group">
             <button class="btn-preview" onclick="dongXemTruoc()" style="background: #7f8c8d; color: white;">🔙 Trở Lại</button>
         </div>
-        
         <div class="toolbar-group">
             <span class="toolbar-text">Click vào chữ trên sớ để chỉnh:</span>
             <button class="btn-tool" onclick="thayDoiKichThuoc(2)" title="Tăng cỡ chữ">A+</button>
@@ -264,7 +182,6 @@
             <button class="btn-tool" onclick="canhLe('center')" title="Canh Giữa">↔️</button>
             <button class="btn-tool" onclick="canhLe('right')" title="Canh Phải">➡️</button>
         </div>
-
         <div class="toolbar-group">
             <button class="btn-preview" onclick="window.print()" style="background: #d32f2f; color: white;">🖨️ XÁC NHẬN IN MÁY</button>
         </div>
@@ -273,12 +190,27 @@
     <div id="printArea"></div>
 
     <script>
-        // --- DÁN URL WEB APP CỦA BẠN VÀO ĐÂY ---
         const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzLKVv-ewmboA3h93HFxPcAWDkvg6wVbMPsWnJXtYcZgHfoYIgL7KMECh5eFX10V5mZZA/exec";
+        
         let khoDuLieu = [];
         let isEditMode = false;
+        let indexDangSua = -1;
         let maBVSuaCaNhan = ""; 
         let activeNode = null; 
+        let debounceTimer = null;
+
+        // Khởi tạo: đọc từ cache LocalStorage trước giúp hiển thị tức thì
+        window.addEventListener('DOMContentLoaded', () => {
+            const cache = localStorage.getItem('CACHE_KHO_DU_LIEU');
+            if (cache) {
+                try {
+                    khoDuLieu = JSON.parse(cache);
+                    document.getElementById('thongBaoSoLuong').innerText = `⚡ Dữ liệu đệm: ${khoDuLieu.length} hồ sơ`;
+                } catch(e) {}
+            }
+            // Tự động đồng bộ ngầm dữ liệu mới nhất
+            taiDuLieuTuSheets(false);
+        });
 
         function chuyenTab(tabName) {
             document.getElementById('tabNhapLieu').classList.add('hidden');
@@ -292,7 +224,7 @@
             } else {
                 document.getElementById('tabTimKiem').classList.remove('hidden');
                 document.getElementById('btnTabTim').classList.add('active');
-                if(khoDuLieu.length === 0) taiDuLieuTuSheets();
+                hienThiBang();
             }
         }
 
@@ -313,8 +245,215 @@
         function layMaBVMoi() {
             if(isEditMode) return; 
             const inMa = document.getElementById('inMaBV');
-            inMa.value = "Đang tải...";
-            fetch(GOOGLE_APP_SCRIPT_URL).then(res => res.json()).then(data => inMa.value = data.nextId || "").catch(() => inMa.value = "");
+            inMa.value = "Đang lấy mã...";
+            fetch(GOOGLE_APP_SCRIPT_URL + "?action=getNextId")
+                .then(res => res.json())
+                .then(data => inMa.value = data.nextId || "")
+                .catch(() => inMa.value = "BV-" + (khoDuLieu.length + 1));
+        }
+
+        function taiDuLieuTuSheets(hienThiThongBao = true) {
+            const tbody = document.getElementById('bangDuLieu');
+            const btn = document.getElementById('btnTaiDuLieu');
+            if (hienThiThongBao) btn.innerText = "⏳ Đang tải...";
+
+            fetch(GOOGLE_APP_SCRIPT_URL + "?action=search")
+                .then(res => {
+                    if (!res.ok) throw new Error("HTTP " + res.status);
+                    return res.json();
+                })
+                .then(data => {
+                    khoDuLieu = data;
+                    localStorage.setItem('CACHE_KHO_DU_LIEU', JSON.stringify(data));
+                    document.getElementById('thongBaoSoLuong').innerText = `✅ Đã đồng bộ: ${khoDuLieu.length} hồ sơ`;
+                    hienThiBang();
+                })
+                .catch(err => {
+                    console.error(err);
+                    if (khoDuLieu.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:red;">Lỗi tải dữ liệu (${err.message})! Vui lòng thử lại.</td></tr>`;
+                    }
+                })
+                .finally(() => {
+                    btn.innerText = "🔄 Tải Lại Dữ Liệu";
+                });
+        }
+
+        // Tối ưu tìm kiếm: Debounce + chuẩn hóa Unicode bỏ dấu để tìm cực nhạy
+        function xoaDauTiengViet(str) {
+            if (!str) return '';
+            return String(str).normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+                .toLowerCase();
+        }
+
+        function hienThiBangDebounce() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(hienThiBang, 250);
+        }
+
+        function hienThiBang() {
+            const tuKhoaRaw = document.getElementById('txtTimKiem').value.trim();
+            const tuKhoaKhongDau = xoaDauTiengViet(tuKhoaRaw);
+            const loaiTim = document.getElementById('loaiTimKiem').value;
+            const tbody = document.getElementById('bangDuLieu');
+
+            let ketQua = khoDuLieu;
+
+            if(loaiTim !== 'All') { 
+                ketQua = ketQua.filter(hs => hs.loai === loaiTim); 
+            }
+
+            if(tuKhoaKhongDau !== '') {
+                ketQua = ketQua.filter(hs => {
+                    const tenKhongDau = xoaDauTiengViet(hs.ten);
+                    const pdKhongDau = xoaDauTiengViet(hs.phapDanh);
+                    const maBVStr = hs.maBV ? String(hs.maBV).toLowerCase() : "";
+                    const dsRawKhongDau = xoaDauTiengViet(hs.danhSachHLRaw);
+
+                    if(hs.loai === "CaNhan") {
+                        return tenKhongDau.includes(tuKhoaKhongDau) || pdKhongDau.includes(tuKhoaKhongDau);
+                    } else {
+                        return maBVStr.includes(tuKhoaKhongDau) || dsRawKhongDau.includes(tuKhoaKhongDau);
+                    }
+                });
+            }
+
+            const tongSo = ketQua.length;
+            const ketQuaHienThi = ketQua.slice(0, 50);
+
+            if(ketQuaHienThi.length === 0) { 
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Không tìm thấy hồ sơ phù hợp!</td></tr>`; 
+                return; 
+            }
+
+            // Dùng mảng map -> join để tránh reflow DOM chậm lag
+            const rowsHTML = ketQuaHienThi.map(hs => {
+                let hienThiTen = "";
+                if (hs.loai === "CaNhan") { 
+                    const hienThiMatAL = hs.matAL ? `<br><span style="font-size:13px; color:#e67e22;">Ngày mất (AL): ${hs.matAL}</span>` : '';
+                    hienThiTen = `<b>${hs.ten || ''}</b>${hienThiMatAL}`; 
+                } else {
+                    let tenDauTien = "Chưa có tên";
+                    if(hs.danhSachHLRaw) {
+                        const lines = hs.danhSachHLRaw.split('\n').map(l => l.trim()).filter(l => l !== '');
+                        const lineHopLe = lines.find(l => !l.toLowerCase().startsWith('pd:') && !l.toLowerCase().startsWith('tức:'));
+                        if(lineHopLe) tenDauTien = lineHopLe.split('-')[0].trim();
+                    }
+                    hienThiTen = `Mã: ${hs.maBV || ''} <br><b style="color:#b71c1c; font-size:16px;">${tenDauTien}</b> <br><span style="font-size:12px;color:#555;">(và những người khác...)</span>`;
+                }
+
+                const indexGoc = khoDuLieu.indexOf(hs);
+                return `<tr>
+                    <td>${hs.loai === "CaNhan" ? "Cá Nhân" : "Cúng Chung"}</td>
+                    <td>${hienThiTen}</td>
+                    <td>${hs.phapDanh || ''}</td>
+                    <td>
+                        <button class="btn-in-nhanh" style="background:#f39c12;" onclick="suaTuBang(${indexGoc})">✏️ Sửa</button>
+                        <button class="btn-in-nhanh" style="background:#d32f2f;" onclick="inTuBang(${indexGoc})">👁️ Xem & In</button>
+                    </td>
+                </tr>`;
+            }).join('');
+
+            let canhBaoHTML = "";
+            if(tongSo > 50) { 
+                canhBaoHTML = `<tr><td colspan="4" style="text-align:center; color:#d32f2f; font-style:italic;">Đang hiển thị 50 / ${tongSo} kết quả. Nhập chi tiết tên để lọc nhanh hơn.</td></tr>`; 
+            }
+
+            tbody.innerHTML = rowsHTML + canhBaoHTML;
+        }
+
+        function suaTuBang(index) {
+            indexDangSua = index;
+            const hs = khoDuLieu[index]; 
+            isEditMode = true; 
+            document.getElementById('btnLuu').innerText = "✏️ Cập Nhật (Lưu Đè Lên Dòng Cũ)";
+            document.getElementById('btnLuu').style.background = "#f39c12";
+            document.getElementById('btnHuySua').classList.remove('hidden');
+            document.getElementById('loaiSo').value = hs.loai; 
+            doiLoaiForm();
+            
+            document.getElementById('inTraiChu').value = hs.traiChu || "";
+            if (hs.loai === "CaNhan") {
+                maBVSuaCaNhan = hs.maBV || ""; 
+                document.getElementById('inTen').value = hs.ten || ""; 
+                document.getElementById('inPhapDanh').value = hs.phapDanh || "";
+                document.getElementById('inSanh').value = hs.sanh || ""; 
+                document.getElementById('inMatAL').value = hs.matAL || "";
+                document.getElementById('inMatDL').value = hs.matDL || ""; 
+                document.getElementById('inTuoi').value = hs.tuoi || "";
+                document.getElementById('inPhoiTien').value = hs.phoiTien || "";
+            } else {
+                document.getElementById('inMaBV').value = hs.maBV || ""; 
+                document.getElementById('inDanhSachCC').value = hs.danhSachHLRaw || ""; 
+            }
+            chuyenTab('nhapLieu'); 
+            window.scrollTo(0, 0);
+        }
+
+        function huyCheDoSua() {
+            isEditMode = false; 
+            indexDangSua = -1;
+            maBVSuaCaNhan = "";
+            document.getElementById('btnLuu').innerText = "💾 Lưu Mới Lên Trang Tính";
+            document.getElementById('btnLuu').style.background = "#2e7d32";
+            document.getElementById('btnHuySua').classList.add('hidden');
+            document.querySelectorAll('input[type="text"], textarea').forEach(el => el.value='');
+            if (document.getElementById('loaiSo').value === 'CungChung') layMaBVMoi();
+        }
+
+        // Tự động cập nhật trực tiếp vào mảng dữ liệu local ngay khi bấm lưu thành công
+        function luuDuLieu() {
+            const loai = document.getElementById('loaiSo').value;
+            const payload = { 
+                action: isEditMode ? "update" : "insert", 
+                loai: loai, 
+                traiChu: document.getElementById('inTraiChu').value 
+            };
+            
+            if(loai === 'CaNhan') {
+                payload.maBV = isEditMode ? maBVSuaCaNhan : ""; 
+                payload.ten = document.getElementById('inTen').value; 
+                payload.phapDanh = document.getElementById('inPhapDanh').value;
+                payload.sanh = document.getElementById('inSanh').value; 
+                payload.matAL = document.getElementById('inMatAL').value;
+                payload.matDL = document.getElementById('inMatDL').value; 
+                payload.tuoi = document.getElementById('inTuoi').value;
+                payload.phoiTien = document.getElementById('inPhoiTien').value;
+            } else { 
+                payload.maBV = document.getElementById('inMaBV').value; 
+                payload.danhSachHLRaw = document.getElementById('inDanhSachCC').value; 
+            }
+
+            const txt = document.getElementById('trangThai'); 
+            txt.style.color = "blue"; 
+            txt.innerText = isEditMode ? "Đang cập nhật..." : "Đang gửi lên Sheets...";
+            
+            fetch(GOOGLE_APP_SCRIPT_URL, { 
+                method: 'POST', 
+                body: JSON.stringify(payload) 
+            })
+            .then(res => res.text())
+            .then(() => { 
+                txt.style.color = "green"; 
+                txt.innerText = isEditMode ? "✅ Cập nhật thành công!" : "✅ Lưu thành công!"; 
+
+                // Tự động đồng bộ ngay tại bộ nhớ trình duyệt mà không cần tải lại
+                if (isEditMode && indexDangSua >= 0) {
+                    khoDuLieu[indexDangSua] = { ...khoDuLieu[indexDangSua], ...payload };
+                } else {
+                    khoDuLieu.unshift(payload); // Thêm dòng mới lên đầu
+                }
+                localStorage.setItem('CACHE_KHO_DU_LIEU', JSON.stringify(khoDuLieu));
+                
+                huyCheDoSua(); 
+                setTimeout(() => txt.innerText = "", 3000); 
+            })
+            .catch(() => { 
+                txt.style.color = "red"; 
+                txt.innerText = "❌ Lỗi kết nối!"; 
+            });
         }
 
         function taoGiaoDienIn(hs) {
@@ -336,10 +475,7 @@
                 if(hs.phapDanh) cauSieuMainInfo += `<div class="pd-name">Pd: ${hs.phapDanh}</div>`;
                 if(hs.sanh) cauSieuMainInfo += `<div class="details"><b>Sanh:</b> ${hs.sanh}</div>`;
                 
-                // --- BẮT ĐẦU ĐOẠN ĐÃ SỬA ---
-                // Chuyển ép kiểu sang String để tránh lỗi khi dữ liệu trả về là Số (VD: nhập mỗi năm 2026)
                 let chuoiMatDL = hs.matDL ? String(hs.matDL) : "";
-                
                 if (chuoiMatDL.includes("T") && chuoiMatDL.includes(".000Z")) {
                     let d = new Date(chuoiMatDL); 
                     chuoiMatDL = `(${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()})`;
@@ -356,7 +492,10 @@
                 if(hs.tuoi) {
                     let chuoiTuoi = hs.tuoi;
                     const timSo = String(hs.tuoi).match(/\d+/); 
-                    if(timSo) { const soTuoi = parseInt(timSo[0], 10); chuoiTuoi = (soTuoi < 60) ? `Hưởng dương: ${soTuoi} tuổi` : `Hưởng thọ: ${soTuoi} tuổi`; }
+                    if(timSo) { 
+                        const soTuoi = parseInt(timSo[0], 10); 
+                        chuoiTuoi = (soTuoi < 60) ? `Hưởng dương: ${soTuoi} tuổi` : `Hưởng thọ: ${soTuoi} tuổi`; 
+                    }
                     cauSieuMainInfo += `<div class="details" style="text-align:center; margin-top:10px;">${chuoiTuoi}</div>`;
                 }
                 
@@ -369,13 +508,15 @@
                 const lines = (hs.danhSachHLRaw || "").split('\n');
                 lines.forEach(line => {
                     if(line.trim() !== '') {
-                        if(line.toLowerCase().includes('pd:') || line.toLowerCase().includes('tức:')) { danhSachLines.push(`<div class="cc-list-sub">${line.trim()}</div>`); } 
-                        else { danhSachLines.push(`<div class="cc-list-name">${line.trim()}</div>`); }
+                        if(line.toLowerCase().includes('pd:') || line.toLowerCase().includes('tức:')) { 
+                            danhSachLines.push(`<div class="cc-list-sub">${line.trim()}</div>`); 
+                        } else { 
+                            danhSachLines.push(`<div class="cc-list-name">${line.trim()}</div>`); 
+                        }
                     }
                 });
             }
 
-            // Đo kích thước để cắt cột an toàn
             const tester = document.createElement('div');
             tester.className = 'half-page'; 
             tester.style.position = 'absolute'; tester.style.visibility = 'hidden'; tester.style.top = '-9999px';
@@ -401,9 +542,7 @@
             if (currentBottomHTML !== "") columns.push(currentBottomHTML); 
             document.body.removeChild(tester); 
 
-            // Ghép HTML
             let finalHTML = "";
-
             if (columns.length === 1) {
                 const colHTML = `
                     <div class="half-page kieu-ngan">
@@ -438,9 +577,6 @@
             return finalHTML;
         }
 
-        // =====================================================================
-        // CHỨC NĂNG XEM TRƯỚC, CHỈNH SỬA TOOLBAR VÀ LƯU DỮ LIỆU (Giữ nguyên)
-        // =====================================================================
         document.addEventListener('click', function(e) {
             if (document.body.classList.contains('preview-mode') && e.target.closest('#printArea')) {
                 if (e.target.tagName === 'DIV' && e.target.innerText.trim() !== '') {
@@ -490,76 +626,10 @@
 
         function inTuBang(index) { thucHienLenhIn(khoDuLieu[index]); }
 
-        function suaTuBang(index) {
-            const hs = khoDuLieu[index]; isEditMode = true; 
-            document.getElementById('btnLuu').innerText = "✏️ Cập Nhật (Lưu Đè Lên Dòng Cũ)";
-            document.getElementById('btnLuu').style.background = "#f39c12";
-            document.getElementById('btnHuySua').classList.remove('hidden');
-            document.getElementById('loaiSo').value = hs.loai; doiLoaiForm();
-            document.getElementById('inTraiChu').value = hs.traiChu || "";
-            if (hs.loai === "CaNhan") {
-                maBVSuaCaNhan = hs.maBV; 
-                document.getElementById('inTen').value = hs.ten || ""; document.getElementById('inPhapDanh').value = hs.phapDanh || "";
-                document.getElementById('inSanh').value = hs.sanh || ""; document.getElementById('inMatAL').value = hs.matAL || "";
-                document.getElementById('inMatDL').value = hs.matDL || ""; document.getElementById('inTuoi').value = hs.tuoi || "";
-                document.getElementById('inPhoiTien').value = hs.phoiTien || "";
-            } else { document.getElementById('inMaBV').value = hs.maBV; document.getElementById('inDanhSachCC').value = hs.danhSachHLRaw || ""; }
-            chuyenTab('nhapLieu'); window.scrollTo(0, 0);
-        }
-
-        function huyCheDoSua() {
-            isEditMode = false; maBVSuaCaNhan = "";
-            document.getElementById('btnLuu').innerText = "💾 Lưu Mới Lên Trang Tính";
-            document.getElementById('btnLuu').style.background = "#2e7d32";
-            document.getElementById('btnHuySua').classList.add('hidden');
-            document.querySelectorAll('input[type="text"], textarea').forEach(el => el.value='');
-            if (document.getElementById('loaiSo').value === 'CungChung') layMaBVMoi();
-        }
-
-        function luuDuLieu() {
-            const loai = document.getElementById('loaiSo').value;
-            const payload = { action: isEditMode ? "update" : "insert", loai: loai, traiChu: document.getElementById('inTraiChu').value };
-            if(loai === 'CaNhan') {
-                payload.maBV = isEditMode ? maBVSuaCaNhan : ""; 
-                payload.ten = document.getElementById('inTen').value; payload.phapDanh = document.getElementById('inPhapDanh').value;
-                payload.sanh = document.getElementById('inSanh').value; payload.matAL = document.getElementById('inMatAL').value;
-                payload.matDL = document.getElementById('inMatDL').value; payload.tuoi = document.getElementById('inTuoi').value;
-                payload.phoiTien = document.getElementById('inPhoiTien').value;
-            } else { payload.maBV = document.getElementById('inMaBV').value; payload.danhSachHLRaw = document.getElementById('inDanhSachCC').value; }
-            const txt = document.getElementById('trangThai'); txt.style.color = "blue"; txt.innerText = isEditMode ? "Đang cập nhật lại..." : "Đang gửi lên Sheets...";
-            fetch(GOOGLE_APP_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
-                .then(() => { txt.style.color = "green"; txt.innerText = isEditMode ? "✅ Cập nhật thành công!" : "✅ Lưu thành công!"; huyCheDoSua(); setTimeout(() => txt.innerText = "", 3000); })
-                .catch(() => { txt.style.color = "red"; txt.innerText = "❌ Lỗi kết nối!"; });
-        }
-
-        function taiDuLieuTuSheets() {
-            const tbody = document.getElementById('bangDuLieu'); tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">⏳ Đang tải dữ liệu từ Trang Tính...</td></tr>`;
-            fetch(GOOGLE_APP_SCRIPT_URL + "?action=search").then(res => res.json()).then(data => { khoDuLieu = data; hienThiBang(); }).catch(err => { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:red;">Lỗi tải dữ liệu!</td></tr>`; });
-        }
-
-        function hienThiBang() {
-            const tuKhoa = document.getElementById('txtTimKiem').value.toLowerCase(); const loaiTim = document.getElementById('loaiTimKiem').value;
-            const tbody = document.getElementById('bangDuLieu'); tbody.innerHTML = "";
-            let ketQua = khoDuLieu;
-            if(loaiTim !== 'All') { ketQua = ketQua.filter(hs => hs.loai === loaiTim); }
-            if(tuKhoa !== '') { ketQua = ketQua.filter(hs => { if(hs.loai === "CaNhan") { return (hs.ten && hs.ten.toLowerCase().includes(tuKhoa)) || (hs.phapDanh && hs.phapDanh.toLowerCase().includes(tuKhoa)); } else { return (hs.maBV && String(hs.maBV).includes(tuKhoa)) || (hs.danhSachHLRaw && hs.danhSachHLRaw.toLowerCase().includes(tuKhoa)); } }); }
-            const ketQuaHienThi = ketQua.slice(0, 50);
-            if(ketQuaHienThi.length === 0) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Không tìm thấy hồ sơ phù hợp!</td></tr>`; return; }
-            ketQuaHienThi.forEach(hs => {
-                let hienThiTen = "";
-                if (hs.loai === "CaNhan") { const hienThiMatAL = hs.matAL ? `<br><span style="font-size:13px; color:#e67e22;">Ngày mất (AL): ${hs.matAL}</span>` : ''; hienThiTen = `<b>${hs.ten}</b>${hienThiMatAL}`; } 
-                else {
-                    let tenDauTien = "Đang tải tên...";
-                    if(hs.danhSachHLRaw) { const lines = hs.danhSachHLRaw.split('\n').map(l => l.trim()).filter(l => l !== ''); const lineHopLe = lines.find(l => !l.toLowerCase().startsWith('pd:') && !l.toLowerCase().startsWith('tức:')); if(lineHopLe) tenDauTien = lineHopLe.split('-')[0].trim(); }
-                    hienThiTen = `Mã: ${hs.maBV} <br><b style="color:#b71c1c; font-size:16px;">${tenDauTien}</b> <br><span style="font-size:12px;color:#555;">(và những người khác...)</span>`;
-                }
-                const indexGoc = khoDuLieu.indexOf(hs);
-                tbody.innerHTML += `<tr><td>${hs.loai === "CaNhan" ? "Cá Nhân" : "Cúng Chung"}</td><td>${hienThiTen}</td><td>${hs.phapDanh || ''}</td><td><button class="btn-in-nhanh" style="background:#f39c12;" onclick="suaTuBang(${indexGoc})">✏️ Sửa</button><button class="btn-in-nhanh" style="background:#d32f2f;" onclick="inTuBang(${indexGoc})">👁️ Xem & In</button></td></tr>`;
-            });
-            if(ketQua.length > 50) { tbody.innerHTML += `<tr><td colspan="4" style="text-align:center; color:#d32f2f; font-style:italic;">Còn ${ketQua.length - 50} kết quả khác đang bị ẩn. Vui lòng nhập thêm từ khóa để tìm chính xác hơn.</td></tr>`; }
-        }
-
-        document.getElementById('txtTimKiem').addEventListener('input', hienThiBang); document.getElementById('loaiTimKiem').addEventListener('change', hienThiBang); doiLoaiForm();
+        // Lắng nghe sự kiện tìm kiếm tối ưu
+        document.getElementById('txtTimKiem').addEventListener('input', hienThiBangDebounce); 
+        document.getElementById('loaiTimKiem').addEventListener('change', hienThiBang); 
+        doiLoaiForm();
     </script>
 </body>
 </html>
