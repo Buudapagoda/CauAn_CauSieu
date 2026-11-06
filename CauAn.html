@@ -383,13 +383,28 @@
         printArea.innerHTML = '';
         
         const dataIn = duLieuCauAn.filter(gd => danhSachChoIn.includes(gd.id));
+        let tongSoPhieu = 0; // Khởi tạo biến đếm tổng số phiếu thực tế
 
         dataIn.forEach(gd => {
             let dsNguoi = gd.danhSach.split('\n').filter(item => item.trim() !== '');
             let cacKhoi12 = chunkArray(dsNguoi, 12);
-            cacKhoi12.forEach(khoi => { printArea.innerHTML += `<div class="ticket">${taoHTMLPhieuIn(gd.giaChu, gd.diaChi, khoi)}</div>`; });
+            cacKhoi12.forEach(khoi => { 
+                printArea.innerHTML += `<div class="ticket">${taoHTMLPhieuIn(gd.giaChu, gd.diaChi, khoi)}</div>`; 
+                tongSoPhieu++; // Cứ vẽ 1 phiếu thì cộng thêm 1
+            });
             gd.soLanIn = (gd.soLanIn || 0) + 1;
         });
+
+        // TÍNH TOÁN VÀ LẤP ĐẦY TRANG A4
+        // Một trang A4 có 3 cột. Nếu tổng phiếu chia 3 bị dư, ta sẽ thêm phiếu trống.
+        let phieuDu = tongSoPhieu % 3;
+        if (phieuDu !== 0) {
+            let soPhieuCanThem = 3 - phieuDu; // Số cột trống còn lại trên tờ giấy
+            for (let i = 0; i < soPhieuCanThem; i++) {
+                // Truyền chuỗi rỗng và mảng rỗng để tạo ra form trắng có sẵn dòng kẻ
+                printArea.innerHTML += `<div class="ticket">${taoHTMLPhieuIn('', '', [])}</div>`;
+            }
+        }
 
         localStorage.setItem('cauAnData', JSON.stringify(duLieuCauAn));
         window.print();
